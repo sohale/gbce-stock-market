@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import math
 import numpy as np
 import datetime
@@ -80,10 +83,10 @@ class Trade(object):
            assert False
            return False
        #if (math.floor(self.quantity)- self.quantity) == 0.0:
-       if not type(self.quantity) == int:
+       if not( type(self.quantity) == int  or  type(self.quantity) == np.int32 ):
            print math.floor(self.quantity), self.quantity, math.floor(self.quantity) - self.quantity
+           print type(self.quantity)  # numpy.int32
            assert False, repr(self.quantity)
-           print 
            return False
        if not self.quantity > 0:
            assert False
@@ -94,6 +97,18 @@ class Trade(object):
        if not self.price > 0.0:
            assert False
            return False
+
+       # Make sure the units are in milliseconds
+       if not str(self.timestamp.dtype) == 'datetime64[ms]':
+           assert False, "Timesctap units must me milliseconds"
+           return False
+
+       if not repr(self.timestamp.dtype) == "dtype('<M8[ms]')":
+           assert False, "Timesctap units must me milliseconds"
+           return False
+
+       # recoding test is done in unittests
+
        return True
 
     def check(self):
@@ -123,7 +138,22 @@ class Trade(object):
     def numpy(self):
        a1 = np.array([(self.timestamp, self.quantity, self.buysell, self.price)], \
           dtype=[('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')])
+       # I keep the ints as signed to avoid accidental bugs, easire detection and tracing of of sign problems.
+       # todo: price will be fixed-point int
        return a1
+
+    @staticmethod
+    def numpy_2_trade(a):
+        assert a.shape == (1,)
+        obj = Trade(a[0]['timestamp'], a[0]['quantity'], a[0]['buysell'], a[0]['price'])
+        assert obj.invar()
+        return obj
+
+    def currency_symbol(self):
+        return u"£".encode( "utf-8" )
+
+    def __repr__(self):
+       return "Trade:"+str(self.quantity)+"x" +self.currency_symbol()+str(self.price)+":"+('BUY' if self.buysell==Trade.BUY else 'SELL')+"@"+str(self.timestamp)
 
 
 def test1():
@@ -131,23 +161,24 @@ def test1():
     t = Trade(timestamp=np.datetime64('2005-02-25'), quantity=1, buysell_type=Trade.BUY, trade_price=1.00);
     t.check()
     print repr(t.numpy())
+    print repr(t.numpy().shape)
     assert t.invar()
     #print np.datetime64('2005-02-25')
     assert t.timestamp - np.datetime64('2005-02-25','ms')  == np.timedelta64(0,'ms')
     assert t.quantity == 1
     assert type(t.quantity) == int
+    print repr(Trade.numpy_2_trade(t.numpy()))
+    recoded = Trade.numpy_2_trade(t.numpy())
+    print str(recoded)
+    print recoded, t, recoded == t
 
-def test2():
-    # (1,2.,'Hello'), (2,3.,"World")
-    x = np.array([], \
-      dtype=[('timestamp', np.datetime64),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')])  # todo: price will be fixed-point int
-    # I keep the ints as signed to avoid accidental bugs, easire detection and tracing of of sign problems.
+    assert t == Trade.numpy_2_trade(t.numpy())  # timestamp's units
+
 
 # main: test
 if __name__ == "__main__":
 
     test1()
-    test2()
 
 
 
