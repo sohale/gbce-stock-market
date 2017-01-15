@@ -115,7 +115,7 @@ class Trade(object):
         if not self.invar():
             raise Error("Invalid state")
 
-    BIGBANG = np.datetime64(datetime.datetime(1800, 1, 1))
+    BIGBANG = np.datetime64(datetime.datetime(1800, 1, 1), 'ms')
 
     EXAMPLE1 = np.array([(datetime.datetime(1800, 1, 1), 2, SELL, 1.0)], \
       dtype=[('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')])
@@ -155,10 +155,16 @@ class Trade(object):
     def __repr__(self):
        return "Trade:"+str(self.quantity)+"x" +self.currency_symbol()+str(self.price)+":"+('BUY' if self.buysell==Trade.BUY else 'SELL')+"@"+str(self.timestamp)
 
+    def __eq__(self, other):
+       return self.quantity == other.quantity    \
+          and self.price == other.price          \
+          and self.buysell == other.buysell      \
+          and self.timestamp == other.timestamp
+
 
 def test1():
     # Todo: should be in Pence (hundredth of a Pound, or in Pounds (GBP) with wo decimals)
-    t = Trade(timestamp=np.datetime64('2005-02-25'), quantity=1, buysell_type=Trade.BUY, trade_price=1.00);
+    t = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), quantity=1, buysell_type=Trade.BUY, trade_price=1.00);
     t.check()
     print repr(t.numpy())
     print repr(t.numpy().shape)
