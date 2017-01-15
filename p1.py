@@ -81,7 +81,7 @@ class Trade(object):
            assert False
            return False
        #if (math.floor(self.quantity)- self.quantity) == 0.0:
-       if type(self.quantity) == int:
+       if not type(self.quantity) == int:
            print math.floor(self.quantity), self.quantity, math.floor(self.quantity) - self.quantity
            assert False, repr(self.quantity)
            print 
@@ -100,10 +100,17 @@ class Trade(object):
     def check(self):
         if not self.invar():
             raise Error("Invalid state")
-    #EXAMPLE1 = np.array([(np.datetime64('2005-02-25'), 2, SELL, 1.0)], \
-    #  dtype=[('timestamp', np.datetime64),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')])
+
     EXAMPLE1 = np.array([(datetime.datetime(1800, 1, 1), 2, SELL, 1.0)], \
       dtype=[('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')])
+
+    EMPTY = np.array([], \
+      dtype=[('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')])
+
+    # An array for each field
+    EMPTY_REC = np.rec.array([], \
+      dtype=[('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')])
+
 
     #
     # h	hour	+/- 1.0e15 years	[1.0e15 BC, 1.0e15 AD]
@@ -115,13 +122,14 @@ class Trade(object):
 
 print __name__
 # Todo: should be in Pence (One hundredth of Pounds, or in Pounds (GBP) with wo decimals)
-t = Trade(timestamp=np.datetime64('2005-02-25'), quantity=1.0, buysell_type=Trade.BUY, trade_price=1.00);
+t = Trade(timestamp=np.datetime64('2005-02-25'), quantity=1, buysell_type=Trade.BUY, trade_price=1.00);
 t.check()
 
 # (1,2.,'Hello'), (2,3.,"World")
 x = np.array([], \
       dtype=[('timestamp', np.datetime64),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')])  # todo: price will be fixed-point int
 # I keep the ints as signed to avoid accidental bugs, easire detection and tracing of of sign problems.
+
 
 # main: test
 if __name__ == "__main__":
