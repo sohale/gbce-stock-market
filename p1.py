@@ -126,19 +126,29 @@ class Trade(object):
        return a1
 
 
-# main: test
-if __name__ == "__main__":
-    pass
-
+def test1():
     # Todo: should be in Pence (hundredth of a Pound, or in Pounds (GBP) with wo decimals)
     t = Trade(timestamp=np.datetime64('2005-02-25'), quantity=1, buysell_type=Trade.BUY, trade_price=1.00);
     t.check()
     print repr(t.numpy())
+    assert t.invar()
+    #print np.datetime64('2005-02-25')
+    assert t.timestamp - np.datetime64('2005-02-25','ms')  == np.timedelta64(0,'ms')
+    assert t.quantity == 1
+    assert type(t.quantity) == int
 
+def test2():
     # (1,2.,'Hello'), (2,3.,"World")
     x = np.array([], \
       dtype=[('timestamp', np.datetime64),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')])  # todo: price will be fixed-point int
     # I keep the ints as signed to avoid accidental bugs, easire detection and tracing of of sign problems.
+
+# main: test
+if __name__ == "__main__":
+
+    test1()
+    test2()
+
 
 
 
