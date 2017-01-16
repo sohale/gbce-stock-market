@@ -39,6 +39,18 @@ if __name__ == "__main__":
 
     test1()
 
+    all_trades = []
+
+
+    for i in range(100):
+        t = Trade(timestamp=np.datetime64(datetime.datetime.now(), 'ms'), quantity=13, buysell_type=Trade.BUY, trade_price=1.00);
+        t.check()
+        all_trades.append(t)
+    print repr(all_trades)
+
+    print Trade.numpy_array(all_trades)
+
+# ===================================================================================
 
 def checkmoney(x):
    # actual absolute money, not rate (e.g. price per share)

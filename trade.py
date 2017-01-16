@@ -61,17 +61,18 @@ class Trade(object):
         if not self.invar():
             raise Error("Invalid state")
 
+    numpy_dtype = [('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')]
+
     BIGBANG = np.datetime64(datetime.datetime(1800, 1, 1), 'ms')
 
     EXAMPLE1 = np.array([(datetime.datetime(1800, 1, 1), 2, SELL, 1.0)], \
-      dtype=[('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')])
+      dtype=numpy_dtype)
 
-    EMPTY = np.array([], \
-      dtype=[('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')])
+    EMPTY = np.array([], numpy_dtype)
 
     # An array for each field
     #EMPTY_REC = np.rec.array([], \
-    #  dtype=[('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')])
+    #  dtype=numpy_dtype)
 
     #
     # h	hour	+/- 1.0e15 years	[1.0e15 BC, 1.0e15 AD]
@@ -83,10 +84,25 @@ class Trade(object):
 
     def numpy(self):
        a1 = np.array([(self.timestamp, self.quantity, self.buysell, self.price)], \
-          dtype=[('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')])
+          dtype=Trade.numpy_dtype )
        # I keep the ints as signed to avoid accidental bugs, easire detection and tracing of of sign problems.
        # todo: price will be fixed-point int
        return a1
+
+    @staticmethod
+    def numpy_array(list_of_trades):
+        l = []
+        for t in list_of_trades:
+            assert t.invar()
+            l.append(t.to_tuple())
+
+        a1 = np.array(l, \
+             dtype=Trade.numpy_dtype )
+        return a1
+
+    def to_tuple(self):
+       return (self.timestamp, self.quantity, self.buysell, self.price)
+
 
     @staticmethod
     def numpy_2_trade(a):
