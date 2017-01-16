@@ -96,9 +96,16 @@ class Trade(object):
         return obj
 
     def currency_symbol(self):
-        return u"£".encode( "utf-8" )
+        # return u"£".encode( "utf-8" )
+        return u"P"
 
     def __repr__(self):
+       """Return the square of x.
+
+       >>> t = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), quantity=13, buysell_type=Trade.BUY, trade_price=1.00); repr(t)
+       'Trade:13xP1.0:BU Y@2005-02-25T00:00:00.000'
+       """
+
        return "Trade:"+str(self.quantity)+"x" +self.currency_symbol()+str(self.price)+":"+('BUY' if self.buysell==Trade.BUY else 'SELL')+"@"+str(self.timestamp)
 
     def __eq__(self, other):
