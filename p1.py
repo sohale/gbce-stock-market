@@ -48,7 +48,8 @@ if __name__ == "__main__":
         all_trades.append(t)
     print repr(all_trades)
 
-    print Trade.numpy_array(all_trades)
+    print Trade.numpy_array(all_trades, False)
+    print Trade.numpy_array(all_trades, True)
 
 # ===================================================================================
 

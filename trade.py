@@ -90,15 +90,17 @@ class Trade(object):
        return a1
 
     @staticmethod
-    def numpy_array(list_of_trades):
+    def numpy_array(list_of_trades,use_rec):
         l = []
         for t in list_of_trades:
             assert t.invar()
             l.append(t.to_tuple())
 
-        a1 = np.array(l, \
-             dtype=Trade.numpy_dtype )
-        return a1
+        if not use_rec:
+            return np.array(l, dtype=Trade.numpy_dtype )
+        else:
+            # Not tested
+            return np.rec.array(l, dtype=Trade.numpy_dtype )
 
     def to_tuple(self):
        return (self.timestamp, self.quantity, self.buysell, self.price)
