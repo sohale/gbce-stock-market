@@ -48,8 +48,12 @@ if __name__ == "__main__":
         all_trades.append(t)
     print repr(all_trades)
 
-    print Trade.numpy_array(all_trades, False)
-    print Trade.numpy_array(all_trades, True)
+    a1 = Trade.numpy_array(all_trades, False)
+    a1rec = Trade.numpy_array(all_trades, True)
+    assert a1.shape == (100,)
+    assert a1rec.shape == (100,)
+
+    # Get trades in past 15 minute
 
 # ===================================================================================
 
