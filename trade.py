@@ -50,7 +50,8 @@ class Trade(object):
            raise Exception("Timestamo units must me milliseconds."+repr(self.timestamp.dtype))
 
        # The "recoding" test is done in tests.py
-       pass
+       #enable usage `assert x.invar`, which ignores this in `python -O3` optimised mode
+       return True
 
 
     numpy_dtype = [('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')]
