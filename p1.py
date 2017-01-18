@@ -18,7 +18,7 @@ def test1():
     """ Contains multiple unit test."""
     # Todo: should be in Pence (hundredth of a Pound, or in Pounds (GBP) with wo decimals)
     t = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), quantity=13, buysell_type=Trade.BUY, trade_price=1.00);
-    t.check()
+    t.invar()
     print repr(t.numpy())
     print repr(t.numpy().shape)
     assert t.invar()
@@ -39,7 +39,7 @@ def example_100trades():
 
     for i in range(100):
         t = Trade(timestamp=np.datetime64(datetime.datetime.now(), 'ms'), quantity=13, buysell_type=Trade.BUY, trade_price=1.00);
-        t.check()
+        t.invar()
         all_trades.append(t)
     print repr(all_trades)
 

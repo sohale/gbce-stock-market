@@ -19,47 +19,39 @@ class Trade(object):
         self.buysell = buysell_type
         "Trade price. price > 0"
         self.price = trade_price
-        assert self.invar()
+        self.invar()
 
 
     def invar(self):
-       """ Invariant: checks validity of the object's state. """
+       """ Class Invariant: checks (asserts) consistency (validity) of the object's state. """
        #print "**", self.timestamp - Trade.BIGBANG, " ----  ",  self.timestamp, " ----  ", Trade.BIGBANG
        if not self.timestamp > Trade.BIGBANG:
-           assert False
-           return False
+           raise Exception("timestamp went wrong")
        #if (math.floor(self.quantity)- self.quantity) == 0.0:
        if not( type(self.quantity) == int  or  type(self.quantity) == np.int32 ):
-           print math.floor(self.quantity), self.quantity, math.floor(self.quantity) - self.quantity
-           print type(self.quantity)  # numpy.int32
-           assert False, repr(self.quantity)
-           return False
+           #print math.floor(self.quantity), self.quantity, math.floor(self.quantity) - self.quantity
+           #print type(self.quantity)  # numpy.int32
+           raise Exception("Quantity has to be an integer: " + repr(self.quantity)+ " type="+str(type(self.quantity)))
+
        if not self.quantity > 0:
-           assert False
-           return False
+           raise Exception("Quantity has to be a positive number")
+
        if not (self.buysell == Trade.BUY or self.buysell == Trade.SELL):
-           assert False
-           return False
+           raise Exception("Trade type has to be either Trade.BUY or Trade.SELL: "+repr(self.buysell)+" Has to be in "+str([Trade.BUY,Trade.SELL]))
+
        if not self.price > 0.0:
-           assert False
-           return False
+           raise Exception("Trade price has to be a real positive number")
 
        # Make sure the units are in milliseconds
        if not str(self.timestamp.dtype) == 'datetime64[ms]':
-           assert False, "Timesctap units must me milliseconds"
-           return False
-
+           raise Exception("Timestamo units must me milliseconds."+str(self.timestamp.dtype))
+ 
        if not repr(self.timestamp.dtype) == "dtype('<M8[ms]')":
-           assert False, "Timesctap units must me milliseconds"
-           return False
+           raise Exception("Timestamo units must me milliseconds."+repr(self.timestamp.dtype))
 
-       # recoding test is done in unittests
+       # The "recoding" test is done in tests.py
+       pass
 
-       return True
-
-    def check(self):
-        if not self.invar():
-            raise Error("Invalid state")
 
     numpy_dtype = [('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')]
 
@@ -111,7 +103,7 @@ class Trade(object):
     def numpy_2_trade(a):
         assert a.shape == (1,)
         obj = Trade(a[0]['timestamp'], a[0]['quantity'], a[0]['buysell'], a[0]['price'])
-        assert obj.invar()
+        obj.invar()
         return obj
 
     def currency_symbol(self):
