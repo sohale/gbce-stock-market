@@ -5,6 +5,7 @@ import unittest2 as unittest
 import numpy as np
 
 from trade import Trade
+from company import CompanyEntry
 
 # assert np.version.full_version >= '1.11.2'
 
@@ -32,7 +33,7 @@ def some_doctests():
     return "OK"
 
 class CompanyTest(unittest.TestCase):
-    def make_example1():
+    def test_GBCE_company_etries(self):
         # GBCE
         t = CompanyEntry('TEA', CompanyEntry.CT.COMMON, 0, None, 100)
         t = CompanyEntry('POP', CompanyEntry.CT.COMMON, 8, None, 100)

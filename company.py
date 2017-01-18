@@ -1,0 +1,3 @@
+class CompanyEntry(object):
+   pass
+
