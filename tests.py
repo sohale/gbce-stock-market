@@ -44,11 +44,11 @@ def some_doctests():
 class CompanyTest(unittest.TestCase):
     def test_GBCE_company_etries(self):
         # GBCE
-        t = CompanyEntry('TEA', CompanyEntry.CT.COMMON, 0, None, 100)
-        t = CompanyEntry('POP', CompanyEntry.CT.COMMON, 8, None, 100)
-        t = CompanyEntry('ALE', CompanyEntry.CT.COMMON, 23, None, 60)
-        t = CompanyEntry('GIN', CompanyEntry.CT.PREFERRED, 8, 2, 100)
-        t = CompanyEntry('JOE', CompanyEntry.CT.COMMON, 13, None, 250)
+        t1 = CompanyEntry('TEA', CompanyEntry.CT.COMMON, 0, None, 100)
+        t2 = CompanyEntry('POP', CompanyEntry.CT.COMMON, 8, None, 100)
+        t3 = CompanyEntry('ALE', CompanyEntry.CT.COMMON, 23, None, 60)
+        t4 = CompanyEntry('GIN', CompanyEntry.CT.PREFERRED, 8, 2, 100)
+        t5 = CompanyEntry('JOE', CompanyEntry.CT.COMMON, 13, None, 250)
 
 
 if __name__ == '__main__':
