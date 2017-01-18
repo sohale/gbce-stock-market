@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import math
 import numpy as np
 import datetime
-import datetime
-import numpy as np
+
+from gbce_utils import GBCEUtils
 
 class Trade(object):
 
@@ -28,7 +27,7 @@ class Trade(object):
        if not self.timestamp > Trade.BIGBANG:
            raise Exception("timestamp went wrong")
        #if (math.floor(self.quantity)- self.quantity) == 0.0:
-       if not( type(self.quantity) == int  or  type(self.quantity) == np.int32 ):
+       if not GBCEUtils.type_is_int(self.quantity):
            #print math.floor(self.quantity), self.quantity, math.floor(self.quantity) - self.quantity
            #print type(self.quantity)  # numpy.int32
            raise Exception("Quantity has to be an integer: " + repr(self.quantity)+ " type="+str(type(self.quantity)))
