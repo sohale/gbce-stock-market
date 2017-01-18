@@ -38,6 +38,7 @@ class TradeTest(unittest.TestCase):
 
         assert t == Trade.numpy_2_trade(t.numpy())  # timestamp's units
 
+
 def some_doctests():
     return "OK"
 

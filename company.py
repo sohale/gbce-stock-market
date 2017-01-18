@@ -4,7 +4,7 @@ from gbce_utils import GBCEUtils
 
 class CompanyEntry(object):
 
-    class CT():
+    class CT(object):
         """ Company types """
         COMMON = 2345
         PREFERRED = 6789
@@ -45,9 +45,9 @@ class CompanyEntry(object):
         elif self.ct == CompanyEntry.CT.PREFERRED:
             return True
         else:
-           raise Exception("Unknown company type")
-        
-    def calculate_dividend_yield():
+            raise Exception("Unknown company type")
+
+    def calculate_dividend_yield(self):
         """ calculate the Divident Yield based on the given market price.
         This is one of the endpoints."""
         if self.ct == CompanyEntry.CT.COMMON:

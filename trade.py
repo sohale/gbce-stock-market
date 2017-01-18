@@ -22,35 +22,35 @@ class Trade(object):
 
 
     def invar(self):
-       """ Class Invariant: checks (asserts) consistency (validity) of the object's state. """
-       #print "**", self.timestamp - Trade.BIGBANG, " ----  ",  self.timestamp, " ----  ", Trade.BIGBANG
-       if not self.timestamp > Trade.BIGBANG:
-           raise Exception("timestamp went wrong")
-       #if (math.floor(self.quantity)- self.quantity) == 0.0:
-       if not GBCEUtils.type_is_int(self.quantity):
-           #print math.floor(self.quantity), self.quantity, math.floor(self.quantity) - self.quantity
-           #print type(self.quantity)  # numpy.int32
-           raise Exception("Quantity has to be an integer: " + repr(self.quantity)+ " type="+str(type(self.quantity)))
+        """ Class Invariant: checks (asserts) consistency (validity) of the object's state. """
+        #print "**", self.timestamp - Trade.BIGBANG, " ----  ",  self.timestamp, " ----  ", Trade.BIGBANG
+        if not self.timestamp > Trade.BIGBANG:
+            raise Exception("timestamp went wrong")
+        #if (math.floor(self.quantity)- self.quantity) == 0.0:
+        if not GBCEUtils.type_is_int(self.quantity):
+            #print math.floor(self.quantity), self.quantity, math.floor(self.quantity) - self.quantity
+            #print type(self.quantity)  # numpy.int32
+            raise Exception("Quantity has to be an integer: " + repr(self.quantity)+ " type="+str(type(self.quantity)))
 
-       if not self.quantity > 0:
-           raise Exception("Quantity has to be a positive number")
+        if not self.quantity > 0:
+            raise Exception("Quantity has to be a positive number")
 
-       if not (self.buysell == Trade.BUY or self.buysell == Trade.SELL):
-           raise Exception("Trade type has to be either Trade.BUY or Trade.SELL: "+repr(self.buysell)+" Has to be in "+str([Trade.BUY,Trade.SELL]))
+        if not (self.buysell == Trade.BUY or self.buysell == Trade.SELL):
+            raise Exception("Trade type has to be either Trade.BUY or Trade.SELL: "+repr(self.buysell)+" Has to be in "+str([Trade.BUY,Trade.SELL]))
 
-       if not self.price > 0.0:
-           raise Exception("Trade price has to be a real positive number")
+        if not self.price > 0.0:
+            raise Exception("Trade price has to be a real positive number")
 
-       # Make sure the units are in milliseconds
-       if not str(self.timestamp.dtype) == 'datetime64[ms]':
-           raise Exception("Timestamo units must me milliseconds."+str(self.timestamp.dtype))
+        # Make sure the units are in milliseconds
+        if not str(self.timestamp.dtype) == 'datetime64[ms]':
+            raise Exception("Timestamo units must me milliseconds."+str(self.timestamp.dtype))
  
-       if not repr(self.timestamp.dtype) == "dtype('<M8[ms]')":
-           raise Exception("Timestamo units must me milliseconds."+repr(self.timestamp.dtype))
+        if not repr(self.timestamp.dtype) == "dtype('<M8[ms]')":
+            raise Exception("Timestamo units must me milliseconds."+repr(self.timestamp.dtype))
 
-       # The "recoding" test is done in tests.py
-       #enable usage `assert x.invar`, which ignores this in `python -O3` optimised mode
-       return True
+        # The "recoding" test is done in tests.py
+        #enable usage `assert x.invar`, which ignores this in `python -O3` optimised mode
+        return True
 
 
     numpy_dtype = [('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')]
@@ -75,12 +75,12 @@ class Trade(object):
     # ns	nanosecond	+/- 292 years	[ 1678 AD, 2262 AD]
 
     def numpy(self):
-       #todo: @param: relative time difference reference
-       a1 = np.array([(self.timestamp, self.quantity, self.buysell, self.price)], \
+        #todo: @param: relative time difference reference
+        a1 = np.array([(self.timestamp, self.quantity, self.buysell, self.price)], \
           dtype=Trade.numpy_dtype )
-       # I keep the ints as signed to avoid accidental bugs, easire detection and tracing of of sign problems.
-       # todo: price will be fixed-point int
-       return a1
+        # I keep the ints as signed to avoid accidental bugs, easire detection and tracing of of sign problems.
+        # todo: price will be fixed-point int
+        return a1
 
     @staticmethod
     def numpy_array(list_of_trades,use_rec):
@@ -96,7 +96,7 @@ class Trade(object):
             return np.rec.array(l, dtype=Trade.numpy_dtype )
 
     def to_tuple(self):
-       return (self.timestamp, self.quantity, self.buysell, self.price)
+        return (self.timestamp, self.quantity, self.buysell, self.price)
 
 
     @staticmethod
@@ -111,16 +111,16 @@ class Trade(object):
         return u"P"
 
     def __repr__(self):
-       """Return the square of x.
+        """Return the square of x.
 
-       >>> t = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), quantity=13, buysell_type=Trade.BUY, trade_price=1.00); repr(t)
-       'Trade:13xP1.0:BU Y@2005-02-25T00:00:00.000'
-       """
+        >>> t = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), quantity=13, buysell_type=Trade.BUY, trade_price=1.00); repr(t)
+        'Trade:13xP1.0:BU Y@2005-02-25T00:00:00.000'
+        """
 
-       return "Trade:"+str(self.quantity)+"x" +self.currency_symbol()+str(self.price)+":"+('BUY' if self.buysell==Trade.BUY else 'SELL')+"@"+str(self.timestamp)
+        return "Trade:"+str(self.quantity)+"x" +self.currency_symbol()+str(self.price)+":"+('BUY' if self.buysell==Trade.BUY else 'SELL')+"@"+str(self.timestamp)
 
     def __eq__(self, other):
-       return self.quantity == other.quantity    \
+        return self.quantity == other.quantity    \
           and self.price == other.price          \
           and self.buysell == other.buysell      \
           and self.timestamp == other.timestamp
