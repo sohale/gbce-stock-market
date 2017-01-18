@@ -38,6 +38,11 @@ class TradeTest(unittest.TestCase):
 
         assert t == Trade.numpy_2_trade(t.numpy())  # timestamp's units
 
+class MiscTests(unittest.TestCase):
+    def tests_numpy_version(self):
+        # In [14]: np.version.full_version
+        # Out[14]: '1.11.2'
+        self.assertTrue(np.version.full_version >= '1.11.2')
 
 def some_doctests():
     return "OK"
