@@ -43,7 +43,6 @@ def demo_get15min():
 # main: test
 if __name__ == "__main__":
 
-    test1()
     demo_get15min()
 
 

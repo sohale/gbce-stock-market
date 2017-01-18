@@ -14,6 +14,8 @@ class CompanyEntry(object):
         if not self._type_preferred():
             assert fixed_dividend is None
             self.fixed_dividend = None
+        else:
+            self.fixed_dividend = fixed_dividend
         self.abbrev = abbrev
         self.last_dividend = last_dividend
         self.par_value = par_value
@@ -31,9 +33,21 @@ class CompanyEntry(object):
         if not self._type_preferred():
             if self.fixed_dividend is not None:
                 raise Exception("fixed_dividend has to be None for PREFERRED company type.")
+        else:
+            if not (self.fixed_dividend >= 0 and self.fixed_dividend <= 100):
+                raise Exception("fixed_dividend has to be a real number between 0, 100. " + repr(self.fixed_dividend))
 
         if not GBCEUtils.type_is_int(self.par_value):
             raise Exception("Par Value has to be int. It is "+repr(self.par_value)+" of type " + str(type(self.par_value)))
+
+        if not self.par_value > 0:
+            raise Exception("Par Value has to be positive non zero. " + repr(self.par_value))
+
+        if not len(self.abbrev) == 3:
+            raise Exception("Company name has to be three letters. " + repr(self.abbrev))
+
+        if not self.last_dividend >= 0:
+            raise Exception("Company last_dividend has to be a non-negative real value. " + repr(self.last_dividend))
 
         #todo: more
 
