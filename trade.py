@@ -83,6 +83,7 @@ class Trade(object):
     # ns	nanosecond	+/- 292 years	[ 1678 AD, 2262 AD]
 
     def numpy(self):
+       #todo: @param: relative time difference reference
        a1 = np.array([(self.timestamp, self.quantity, self.buysell, self.price)], \
           dtype=Trade.numpy_dtype )
        # I keep the ints as signed to avoid accidental bugs, easire detection and tracing of of sign problems.

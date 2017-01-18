@@ -10,7 +10,6 @@ from trade import Trade
 
 class TradeTest(unittest.TestCase):
     def test1(self):
-        self.assertTrue(False)
         """ Contains multiple unit test."""
         # Todo: should be in Pence (hundredth of a Pound, or in Pounds (GBP) with wo decimals)
         t = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), quantity=13, buysell_type=Trade.BUY, trade_price=1.00)
@@ -32,7 +31,18 @@ class TradeTest(unittest.TestCase):
 def some_doctests():
     return "OK"
 
+class CompanyTest(unittest.TestCase):
+    def make_example1():
+        # GBCE
+        t = CompanyEntry('TEA', CompanyEntry.CT.COMMON, 0, None, 100)
+        t = CompanyEntry('POP', CompanyEntry.CT.COMMON, 8, None, 100)
+        t = CompanyEntry('ALE', CompanyEntry.CT.COMMON, 23, None, 60)
+        t = CompanyEntry('GIN', CompanyEntry.CT.PREFERRED, 8, 2, 100)
+        t = CompanyEntry('JOE', CompanyEntry.CT.COMMON, 13, None, 250)
+
+
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
+    unittest.main()
 
