@@ -13,33 +13,15 @@ if __name__ == "__main__":
 
 # ===================================================================================
 
-def checkmoney(x):
-    """
-    Used for an actual absolute amount of money, not rate or price per share, etc
-    Makes sure the amount is in cents, i.e. has two decimals, and not a fraction of a Cent/Pence.
-    """
-    assert abs(int(x*100)- (x*100)) < 0.0000001
+from gbce_utils import CurrencyUtils
 
-def fixmoney_floor(x):
-    result = math.floor(x*100) * 0.0100000000
-    checkmoney(result)
-    return result
+def test_currencyUtils():
+    market_price = 1.00
+    shares = 4
+    paid = CurrencyUtils.fixmoney_floor(market_price * shares)
+    #CurrencyUtils.checkmoney(paid)
 
-def fixmoney_ceil(x):
-    result = math.ceil(x*100) * 0.0100000000
-    checkmoney(result)
-    return result
+    paid = CurrencyUtils.fixmoney_floor(paid)
+    CurrencyUtils.checkmoney(paid)
 
-def fixmoney_round(x):
-    result = math.round(x*100) * 0.0100000000
-    checkmoney(result)
-    return result
-
-
-market_price = 1.00
-shares = 4
-paid = fixmoney_floor(market_price * shares)
-#checkmoney(paid)
-
-paid = fixmoney_floor(paid)
-checkmoney(paid)
+test_currencyUtils()

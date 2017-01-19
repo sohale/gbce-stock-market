@@ -7,6 +7,8 @@ import datetime
 import math
 import numpy as np
 
+# ####################################################################
+
 class TypeUtils(object):
     """ A static class that is simply a collection of static functions. """
 
@@ -16,14 +18,16 @@ class TypeUtils(object):
         # return type(value) is int  or  type(value) == np.int32
         return isinstance(value, int)  or  isinstance(value, np.int32)
 
+# ####################################################################
+
 class TimeUtils(object):
 
-    ############## Timestamp utils ############
+    """ Timestamp utils """
 
-    # """ The origin of time. """
+    # The origin of time.
     BIGBANG = np.datetime64(datetime.datetime(1800, 1, 1), 'ms')
 
-    #
+    # Other units:
     # h	hour	+/- 1.0e15 years	[1.0e15 BC, 1.0e15 AD]
     # m	minute	+/- 1.7e13 years	[1.7e13 BC, 1.7e13 AD]
     # s	second	+/- 2.9e12 years	[ 2.9e9 BC, 2.9e9 AD]
@@ -52,9 +56,37 @@ class TimeUtils(object):
         return np.timedelta64(time_diff_ms, 'ms')
 
 
+# ####################################################################
+
 class CurrencyUtils(object):
     GBP_symbol = u"£".encode( "utf-8" )
-    # u"P"
+
+    @staticmethod
+    def checkmoney(x):
+        """
+        Used for an actual absolute amount of money, not rate or price per share, etc
+        Makes sure the amount is in cents, i.e. has two decimals, and not a fraction of a Cent/Pence.
+        """
+        assert abs(int(x*100)- (x*100)) < 0.0000001
+
+    @staticmethod
+    def fixmoney_floor(x):
+        result = math.floor(x*100) * 0.0100000000
+        CurrencyUtils.checkmoney(result)
+        return result
+
+    @staticmethod
+    def fixmoney_ceil(x):
+        result = math.ceil(x*100) * 0.0100000000
+        CurrencyUtils.checkmoney(result)
+        return result
+
+    @staticmethod
+    def fixmoney_round(x):
+        result = round(x*100) * 0.0100000000
+        CurrencyUtils.checkmoney(result)
+        return result
+
 
 class TestUtils(object):
     @staticmethod
