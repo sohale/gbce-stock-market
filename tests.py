@@ -24,7 +24,7 @@ class TradeTest(unittest.TestCase):
         c = None
         trd = Trade(c, timestamp=np.datetime64('2005-02-25', 'ms'), \
             quantity=13, buysell_type=Trade.BUY, trade_price=1.00)
-        trd.invar()
+        trd.check()
         return trd
 
     def test1(self):
@@ -32,7 +32,7 @@ class TradeTest(unittest.TestCase):
         trd = TradeTest.example_trade()
         print repr(trd.numpy())
         print repr(trd.numpy().shape)
-        trd.invar()
+        trd.check()
         # print np.datetime64('2005-02-25')
         assert trd.timestamp - np.datetime64('2005-02-25', 'ms') == np.timedelta64(0, 'ms')
         assert trd.quantity == 13
@@ -55,7 +55,7 @@ class TradeTest(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             trd = Trade(None, timestamp=np.datetime64('2005-02-25', 'ms'), \
                 quantity=quantity, buysell_type=Trade.BUY, trade_price=1.00)
-            trd.invar()
+            trd.check()
         self.assertTrue(xor(message_substring in str(context.exception), \
             not bool(causes_exception)))
 
@@ -129,7 +129,7 @@ class TradeSeriesTest(unittest.TestCase):
             c = CompanyTest.example2()
             trd = Trade(c, timestamp=ts, \
                 quantity=3+(i % 5), buysell_type=Trade.BUY, trade_price=1.00)
-            trd.invar()
+            trd.check()
             trade_series.all_trades.append(trd)
         # print repr(trade_series.all_trades) # large dump
 

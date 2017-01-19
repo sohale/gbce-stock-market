@@ -26,10 +26,10 @@ class Trade(object):
         self.quantity = quantity
         self.buysell = buysell_type
         self.price = trade_price
-        self.invar()
+        self.check()
 
 
-    def invar(self):
+    def check(self):
         """ Class Invariant: checks (asserts) consistency (validity) of the object's state. """
 
         if self.company_obj is not None and not isinstance(self.company_obj, CompanyEntry):
@@ -60,7 +60,7 @@ class Trade(object):
             raise Exception("Timestamo units must me milliseconds."+repr(self.timestamp.dtype))
 
         # The "recoding" test is done in tests.py
-        #enable usage `assert x.invar`, which ignores this in `python -O3` optimised mode
+        #enable usage `assert x.check`, which ignores this in `python -O3` optimised mode
         return True
 
 
@@ -88,7 +88,7 @@ class Trade(object):
     def numpy_array(list_of_trades, use_rec):
         l = []
         for t in list_of_trades:
-            assert t.invar()
+            assert t.check()
             l.append(t.to_tuple())
 
         if not use_rec:
@@ -107,7 +107,7 @@ class Trade(object):
         # fixme: select those companies only based on their three-etter code
         company = None
         obj = Trade(company, a[0]['timestamp'], a[0]['quantity'], a[0]['buysell'], a[0]['price'])
-        obj.invar()
+        obj.check()
         return obj
 
     def currency_symbol(self):

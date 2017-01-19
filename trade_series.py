@@ -89,7 +89,7 @@ class TradeSeries(object):
         weighted_logprice = 0.0
         sum_weights = 0.0
         for trade in trades_iterable:
-            # log(trade.price) is always defined because the Trade.invar() guarantees it.
+            # log(trade.price) is always defined because the Trade.check() guarantees it.
             weighted_logprice += trade.quantity * math.log(trade.price)
             sum_weights += trade.quantity
 
