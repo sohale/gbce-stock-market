@@ -9,9 +9,10 @@ Also see `market.py` and `tests.py`. To start, use `./run.sh`
 ./gbce company ABC 12 50
 ./gbce company JUC 15 30
 ./gbce show
-./gbce trade JUC £10.0 +3  # to be implemented
-./gbce buy GIN £10.0 3  # to be implemented
-./gbce sell ALE £5.0 2  # to be implemented
+./gbce buy GIN £10.0 3    # to be added to command line interface
+./gbce sell ALE £5.0 2    # to be added to command line interface
+./gbce all-share-index    # to be added to command line interface
+./gbce volume-weighted GIN 15  # to be added to command line interface
 ```
 
 ## Data Structures:

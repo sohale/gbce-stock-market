@@ -1,2 +1,2 @@
-python p1.py
+python gbce
 python tests.py

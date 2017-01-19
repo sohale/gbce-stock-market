@@ -71,6 +71,7 @@ def cmdline_main():
         ./gbce.py company JUC 15 30 
         ./gbce.py show
         """
+        print CEND
         exit()
 
     commandname = sys.argv[1]
