@@ -49,7 +49,7 @@ class TradeTest(unittest.TestCase):
     def _assert_bad_trade_raises_exception(self, quantity, message_substring,\
             causes_exception=True):
         with self.assertRaises(Exception) as context:
-            t = Trade( timestamp=np.datetime64('2005-02-25', 'ms'), \
+            t = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), \
                 quantity=quantity, buysell_type=Trade.BUY, trade_price=1.00)
             t.invar()
         self.assertTrue(xor(message_substring in str(context.exception), \
@@ -80,46 +80,46 @@ class CompanyTest(unittest.TestCase):
         t3 = CompanyEntry('ALE', CompanyEntry.CT.COMMON, 23, None, 60)
         t4 = CompanyEntry('GIN', CompanyEntry.CT.PREFERRED, 8, 2, 100)
         t5 = CompanyEntry('JOE', CompanyEntry.CT.COMMON, 13, None, 250)
-        self.assertEqual( t1.calculate_dividend_yield(1.0), 0)
+        self.assertEqual(t1.calculate_dividend_yield(1.0), 0)
 
 from trade_series import TradeSeries
 from gbce_utils import TimeUtils
 
 class TradeSeriesTest(unittest.TestCase):
     @staticmethod
-    def _add_example_100trades(trade_series, count=100):
+    def _add_example_100trades(testSelf, trade_series, count=100):
         """ Gnerates 100 random trades to experiment with."""
 
         for i in range(count):
-            numpy_time_now =  TimeUtils.numpy_time_now()      # np.datetime64(datetime.datetime.now(), 'ms')
+            numpy_time_now = TimeUtils.numpy_time_now()
             OFFSET = -2  # To make sure it includes all of it, even depite being end-exlusive
-            ts = numpy_time_now - TimeUtils.numpy_time_delta_min( 1*i + OFFSET)
+            ts = numpy_time_now - TimeUtils.numpy_time_delta_min(1*i + OFFSET)
             t = Trade(timestamp=ts, \
                 quantity=3+(i % 5), buysell_type=Trade.BUY, trade_price=1.00)
             t.invar()
             trade_series.all_trades.append(t)
-        print repr(trade_series.all_trades)
+        # print repr(trade_series.all_trades) # large dump
 
         #todo: refactor as a test
         a1 = trade_series.get_numpy()
-        assert a1.shape == (count,)
+        testSelf.assertEqual(a1.shape, (count,))  # This is not the main purpose of the test though
 
         #todo: refactor as a test
         a1rec = trade_series.get_numpy_rec()
-        assert a1rec.shape == (count,)
+        testSelf.assertEqual(a1rec.shape, (count,))  # This is not the main purpose of the test though
 
     def test_get15min(self):
         # Get trades in past 15 minute
         ts1 = TradeSeries()
         how_many_minutes = 15
         count = 100  # fixme: make sure this covers beyond number of minutes from both sides
-        TradeSeriesTest._add_example_100trades(ts1, count=count)
+        TradeSeriesTest._add_example_100trades(self, ts1, count=count)
         ts1_recent_trades = ts1.select_recent_trades(how_many_minutes*TimeUtils.MIN)
         selected_count = sum(1 for i in ts1_recent_trades)
         #for i in ts1.all_trades: print i, ;print
         #for i in ts1_recent_trades: print i, ;print
         self.assertEqual(len(ts1.all_trades), count)
-        self.assertEqual( selected_count, how_many_minutes)
+        self.assertEqual(selected_count, how_many_minutes)
 
 if __name__ == '__main__':
     import doctest
