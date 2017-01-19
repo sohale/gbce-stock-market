@@ -45,3 +45,8 @@ The float should not be used for currencies. There solution has two necessary pa
 
 * The rates should not be stored. Instead, the absolute money. For example in the Trade objects, instead of storing the (quantity, price), we should store (total,quantity). The price should be calculated using a function (e.g. a getter). This is especially important in the original representation (model) that the type of money variables should not be a float.
 A similar solution is needed in other classes.
+
+## Requirements:
+* Linux
+* Python 2
+* numpy, pickle
