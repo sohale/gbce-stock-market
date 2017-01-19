@@ -12,9 +12,11 @@ class TradeSeries(object):
 
 
     def get_numpy(self):
+        """ AoS: Array-of-Structure version for/in numpy."""
         return Trade.numpy_array(self.all_trades, use_rec=False)
 
     def get_numpy_rec(self):
+        """ SoA: Structure-of-Array version for/in numpy. It is also known as `record` or `numpy.rec.array` in numpy."""
         return Trade.numpy_array(self.all_trades, use_rec=True)
 
     def _select_recent_trades(self, from_ms, to_ms):

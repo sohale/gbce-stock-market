@@ -65,6 +65,7 @@ class TradeTest(unittest.TestCase):
 
 class MiscTests(unittest.TestCase):
     """ Misc tests for versions, etc. """
+
     def tests_numpy_version(self):
         """
         >>> np.version.full_version
