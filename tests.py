@@ -49,10 +49,11 @@ class TradeTest(unittest.TestCase):
 
     def test_bad_trade(self):
         """ Tests whether non-int types are correctly detected """
-        self._assert_bad_trade_raises_exception(13.01, 'Quantity has to be an integer')
-        self._assert_bad_trade_raises_exception(13.00, 'Quantity has to be an integer')
-        self._assert_bad_trade_raises_exception(0.00, 'Quantity has to be an integer')
-        self._assert_bad_trade_raises_exception(0, 'Quantity has to be an integer', False)
+        QUANTITY_INT_ERROR = 'Quantity has to be an integer'
+        self._assert_bad_trade_raises_exception(13.01, QUANTITY_INT_ERROR)
+        self._assert_bad_trade_raises_exception(13.00, QUANTITY_INT_ERROR)
+        self._assert_bad_trade_raises_exception(0.00, QUANTITY_INT_ERROR)
+        self._assert_bad_trade_raises_exception(0, QUANTITY_INT_ERROR, False)
 
 class MiscTests(unittest.TestCase):
     def tests_numpy_version(self):
