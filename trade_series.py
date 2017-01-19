@@ -24,7 +24,7 @@ class TradeSeries(object):
         """ SoA: Structure-of-Array version for/in numpy. It is also known as `record` or `numpy.rec.array` in numpy."""
         return Trade.numpy_array(self.all_trades, use_rec=True)
 
-    def _select_recent_trades(self, from_ms, to_ms):
+    def _select_recent_trades(self, from_ms, to_ms, company_code):
         """ Selected a set of Trades in the given interval. Generator version. """
         if from_ms > to_ms:
             raise Exception("Usage error: Incorrect range.start is after end end of the time interval's range.")
@@ -32,16 +32,17 @@ class TradeSeries(object):
             raise Exception("Usage error: Empty range. The end of the range is not inclusive.")
         for t in self.all_trades:
             if t.timestamp >= from_ms and t.timestamp < to_ms:
-                yield t
+                if company_code is None or (t.company_obj is not None and t.company_obj.abbrev == company_code):
+                    yield t
 
-    def select_recent_trades(self, time_diff_ms): #(from_ms, to_ms=0):
+    def select_recent_trades(self, time_diff_ms, company_code): #(from_ms, to_ms=0):
         """ Makes a collection of Trades in the given length of history. Generator version.
         Warning: the end of the range is not inclusive. """
 
         numpy_time_now_ms = TimeUtils.numpy_time_now() #np.datetime64(datetime.datetime.now(), 'ms')
         from_ms = numpy_time_now_ms - TimeUtils.numpy_time_delta_msec(time_diff_ms)
         #raise Exception("Not implemented "+str(from_ms)+" "+str(now_ms))
-        return self._select_recent_trades(from_ms, numpy_time_now_ms)
+        return self._select_recent_trades(from_ms, numpy_time_now_ms, company_code)
 
     VERBOSE = True
 
