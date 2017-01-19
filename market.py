@@ -46,7 +46,8 @@ class Market(object):
     def numpy_2_trade_(self, numpy_arr):
         return Market._numpy_2_trade(numpy_arr, self.companies_dict)
 
-    def make_numpy(self, iterable, use_rec=False):
+    @staticmethod
+    def make_numpy(iterable, use_rec=False):
         return Trade.numpy_array(iterable, use_rec)
 
     #todo: pandas dataframe representation

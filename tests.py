@@ -227,8 +227,9 @@ class MarketTest(unittest.TestCase):
         market = Market()
         TradeSeriesTest._generate_example_100trades(self, market.trade_series, count=count, randomise_mixed_companies=True)
         trades_iterable = market.trade_series.select_recent_trades(how_many_minutes*TimeUtils.MIN, company_code=selected_company_code)
-        n = market.make_numpy(trades_iterable)
+        n = Market.make_numpy(trades_iterable)
         # print "big numpy shape: ", n.shape  # typical result: (31,)
+        self.assertTrue(True)  # By the time it reaches here, things should be fine.
 
     def test_market_numpy2_mixed(self):
         """ First converts the whole market into a numpy array representation,
@@ -244,7 +245,7 @@ class MarketTest(unittest.TestCase):
         TradeSeriesTest._generate_example_100trades(self, market.trade_series, 
             count=count, randomise_mixed_companies=True)
         trades_iterable = market.trade_series.select_all_trades()
-        n = market.make_numpy(trades_iterable)
+        n = Market.make_numpy(trades_iterable)
         self.assertEqual(n.shape, (count,))
         # print "big numpy shape: ", n.shape
         # print n
