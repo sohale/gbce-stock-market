@@ -1,9 +1,20 @@
 A minimal Stock Exchange with Companies and Time Series of Trades.
 
-See `market.py` and `tests.py`. To start, use `./run.sh`
+See `commanline_example.sh` for usage.
+Also see `market.py` and `tests.py`. To start, use `./run.sh`
 
+## Usage:
+```
+./gbce.py init
+./gbce.py company ABC 12 50 
+./gbce.py company JUC 15 30 
+./gbce.py show
+./gbce.py show
+./gbce.py deliberately_causing_error
+```
 
-## Currently three representations of TradeSeries are implemented.
+## Data Structures:
+Currently three representations of TradeSeries are implemented.
 
 * A Python list of Trade objects
 * A numpy array of a struct. 
@@ -24,3 +35,11 @@ Useful for purposes of Streaming, low-latency, distributed, pipe, etc
 * Online streams
 * Big data, etc
 * Linux bash pipe (text representation), and CSV
+
+## Major issue:
+The float should not be used for currencies. There solution has two necessary parts:
+
+* Storing fixed point (or integer * 100) instead of `float`s, or floats with assertions to check if they have exactly two decimals (next significant digit should be < 0.000001). Another solution is to use python packages available for money (as a data type): `python-money`, `decimal`, `QuantLib`, custom types, etc. Such solutions have the potential to cause performance issues.
+
+* The rates should not be stored. Instead, the absolute money. For example in the Trade objects, instead of storing the (quantity, price), we should store (total,quantity). The price should be calculated using a function (e.g. a getter). This is especially important in the original representation (model) that the type of money variables should not be a float.
+A similar solution is needed in other classes.
