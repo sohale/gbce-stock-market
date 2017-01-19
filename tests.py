@@ -71,7 +71,8 @@ class CompanyTest(unittest.TestCase):
         t2 = CompanyEntry('POP', CompanyEntry.CT.COMMON, 8, None, 100)
         t3 = CompanyEntry('ALE', CompanyEntry.CT.COMMON, 23, None, 60)
         t4 = CompanyEntry('GIN', CompanyEntry.CT.PREFERRED, 8, 2, 100)
-        t5 = CompanyEntry('JOE', CompanyEntry.CT.COMMON, 13, None, 250)
+        t5 = CompanyEntry('JOE', CompanyEntry.CT.COMMON, 13, None, 250)                                                                                                                                                                                                                                                                                                                 
+        print "111111", t1.calculate_dividend_yield(1)
 
 
 if __name__ == '__main__':

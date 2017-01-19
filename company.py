@@ -61,11 +61,11 @@ class CompanyEntry(object):
         else:
             raise Exception("Unknown company type")
 
-    def calculate_dividend_yield(self):
+    def calculate_dividend_yield(self, market_price):
         """ calculate the Divident Yield based on the given market price.
         This is one of the endpoints."""
         if self.ct == CompanyEntry.CT.COMMON:
-            pass
+            return self.last_dividend / market_price
         elif self.ct == CompanyEntry.CT.PREFERRED:
-            pass
+            return self.last_dividend / market_price
 
