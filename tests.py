@@ -25,51 +25,58 @@ class TradeTest(unittest.TestCase):
 
     def test1(self):
         """ Contains multiple unit test."""
-        t = TradeTest.example_trade()
-        print repr(t.numpy())
-        print repr(t.numpy().shape)
-        t.invar()
+        trd = TradeTest.example_trade()
+        print repr(trd.numpy())
+        print repr(trd.numpy().shape)
+        trd.invar()
         # print np.datetime64('2005-02-25')
-        assert t.timestamp - np.datetime64('2005-02-25', 'ms') == np.timedelta64(0, 'ms')
-        assert t.quantity == 13
-        self.assertEqual(type(t.quantity), int)
+        assert trd.timestamp - np.datetime64('2005-02-25', 'ms') == np.timedelta64(0, 'ms')
+        assert trd.quantity == 13
+        self.assertEqual(type(trd.quantity), int)
 
     def test_recoding_test(self):
         """ Re-coding means encoding and decoding back from and to another representation
            (here, numpy versus class)"""
-        t = TradeTest.example_trade()
-        print repr(Trade.numpy_2_trade(t.numpy()))
-        recoded = Trade.numpy_2_trade(t.numpy())
+        trd = TradeTest.example_trade()
+        print repr(Trade.numpy_2_trade(trd.numpy()))
+        recoded = Trade.numpy_2_trade(trd.numpy())
         print str(recoded)
-        print recoded, t, recoded == t
+        print recoded, trd, recoded == trd
 
         # Involves the timestamp's units
-        assert t == Trade.numpy_2_trade(t.numpy())
+        self.assertEqual(trd, Trade.numpy_2_trade(trd.numpy()))  # used __eq__
 
-    def _assert_bad_trade_raises_exception(self, quantity, message_substring,\
+    def assert_bad_trade_raises_exception(self, quantity, message_substring,\
             causes_exception=True):
         with self.assertRaises(Exception) as context:
-            t = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), \
+            trd = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), \
                 quantity=quantity, buysell_type=Trade.BUY, trade_price=1.00)
-            t.invar()
+            trd.invar()
         self.assertTrue(xor(message_substring in str(context.exception), \
             not bool(causes_exception)))
 
     def test_bad_trade(self):
         """ Tests whether non-int types are correctly detected """
         QUANTITY_INT_ERROR = 'Quantity has to be an integer'
-        self._assert_bad_trade_raises_exception(13.01, QUANTITY_INT_ERROR)
-        self._assert_bad_trade_raises_exception(13.00, QUANTITY_INT_ERROR)
-        self._assert_bad_trade_raises_exception(0.00, QUANTITY_INT_ERROR)
-        self._assert_bad_trade_raises_exception(0, QUANTITY_INT_ERROR, False)
+        self.assert_bad_trade_raises_exception(13.01, QUANTITY_INT_ERROR)
+        self.assert_bad_trade_raises_exception(13.00, QUANTITY_INT_ERROR)
+        self.assert_bad_trade_raises_exception(0.00, QUANTITY_INT_ERROR)
+        self.assert_bad_trade_raises_exception(0, QUANTITY_INT_ERROR, False)
 
 class MiscTests(unittest.TestCase):
+    """ Misc tests for versions, etc. """
     def tests_numpy_version(self):
-        # In [14]: np.version.full_version
-        # Out[14]: '1.11.2'
+        """
+        >>> np.version.full_version
+        '1.11.2'
+        """
         self.assertTrue(np.version.full_version >= '1.11.2')
 
 def some_doctests():
+    """
+    >>> 1
+    1
+    """
     return "OK"
 
 class CompanyTest(unittest.TestCase):
@@ -94,10 +101,10 @@ class TradeSeriesTest(unittest.TestCase):
             numpy_time_now = TimeUtils.numpy_time_now()
             OFFSET = -2  # To make sure it includes all of it, even depite being end-exlusive
             ts = numpy_time_now - TimeUtils.numpy_time_delta_min(1*i + OFFSET)
-            t = Trade(timestamp=ts, \
+            trd = Trade(timestamp=ts, \
                 quantity=3+(i % 5), buysell_type=Trade.BUY, trade_price=1.00)
-            t.invar()
-            trade_series.all_trades.append(t)
+            trd.invar()
+            trade_series.all_trades.append(trd)
         # print repr(trade_series.all_trades) # large dump
 
         #todo: refactor as a test
