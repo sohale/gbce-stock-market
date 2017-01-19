@@ -66,4 +66,4 @@ class Market(object):
         return market
 
     def __repr__(self):
-        return repr(self.companies_dict)+" TRADES:"+str(len(self.trade_series.all_trades))
+        return "Compaines: " + repr(self.companies_dict.values())+";  Trades:"+str(len(self.trade_series.all_trades))

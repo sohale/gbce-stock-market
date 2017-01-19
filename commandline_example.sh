@@ -5,4 +5,4 @@
 ./gbce.py company JUC 15 30 
 ./gbce.py show
 ./gbce.py show
-./gbce.py errrr
+./gbce.py deliberately_causing_error

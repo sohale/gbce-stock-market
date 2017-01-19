@@ -51,9 +51,19 @@ functions_lookup = {
         'show': commandline.show,
     }
 
-if __name__ == "__main__":
-    # demo_get15min()
+CRED = '\033[91m'
+CEND = '\033[0m'
+CGREEN  = '\33[32m'
+CYELLOW = '\33[33m'
+CBLUE   = '\33[34m'
+CVIOLET = '\33[35m'
+CBEIGE  = '\33[36m'
+CWHITE  = '\33[37m'
+
+def cmdline_main():
     #print repr(sys.argv)  # ['p1.py', 'company', 'ABC', '12', '50']
+    
+    print CGREEN
     if len(sys.argv) == 1:
         print "Invalid usage. Usage:", """ 
         ./gbce.py init
@@ -69,5 +79,13 @@ if __name__ == "__main__":
     if not commandname in functions_lookup:
         raise Exception("unknown command. available commands: "+(", ".join(functions_lookup.keys())))
     func = functions_lookup[commandname]
-    print "COMMAND: ", commandname
+    print "GBCE command detected: ", commandname
+    print CEND
     func(*xargs)
+    
+if __name__ == "__main__":
+    # demo_get15min()
+    try:
+        cmdline_main()
+    except Exception as e:
+        print CRED + repr(e) + CEND
