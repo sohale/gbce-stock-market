@@ -3,9 +3,6 @@
 
 """ GBCS Stock Demo """
 
-import numpy as np
-import datetime
-
 from trade import Trade
 from gbce_utils import TimeUtils
 
@@ -16,25 +13,6 @@ class TradeSeries(object):
         """ Initialises an empty series """
         self.all_trades = []
 
-    def add_example_100trades(self, count=10):
-        """ Gnerates 100 random trades to experiment with."""
-
-        for i in range(count):
-            numpy_time_now =  TimeUtils.numpy_time_now()      # np.datetime64(datetime.datetime.now(), 'ms')
-            ts = numpy_time_now - TimeUtils.numpy_time_delta_min(1)
-            t = Trade(timestamp=ts, \
-                quantity=3+(i % 5), buysell_type=Trade.BUY, trade_price=1.00)
-            t.invar()
-            self.all_trades.append(t)
-        print repr(self.all_trades)
-
-        #todo: refactor as a test
-        a1 = self.get_numpy()
-        assert a1.shape == (10,)
-
-        #todo: refactor as a test
-        a1rec = self.get_numpy_rec()
-        assert a1rec.shape == (10,)
 
     def get_numpy(self):
         return Trade.numpy_array(self.all_trades, use_rec=False)
@@ -42,26 +20,60 @@ class TradeSeries(object):
     def get_numpy_rec(self):
         return Trade.numpy_array(self.all_trades, use_rec=True)
 
-    def _get_recent_trades(self, from_ms, to_ms):
+    def _select_recent_trades(self, from_ms, to_ms):
         """ Selected a set of Trades in the given interval. Generator version. """
+        if from_ms > to_ms:
+            raise Exception("Usage error: Incorrect range.start is after end end of the time interval's range.")
+        if from_ms == to_ms:
+            raise Exception("Usage error: Empty range. The end of the range is not inclusive.")
         for t in self.all_trades:
-            if t.timestamp >= from_ms and t.timestamp < from_ms:
+            if t.timestamp >= from_ms and t.timestamp < to_ms:
                 yield t
-    def get_recent_trades(self, time_diff_ms): #(from_ms, to_ms=0):
-        """ Makes a collection of Trades in the given length of history. Generator version. """
+
+    def select_recent_trades(self, time_diff_ms): #(from_ms, to_ms=0):
+        """ Makes a collection of Trades in the given length of history. Generator version.
+        Warning: the end of the range is not inclusive. """
 
         numpy_time_now_ms = TimeUtils.numpy_time_now() #np.datetime64(datetime.datetime.now(), 'ms')
         from_ms = numpy_time_now_ms - TimeUtils.numpy_time_delta_msec(time_diff_ms)
         #raise Exception("Not implemented "+str(from_ms)+" "+str(now_ms))
-        return self._get_recent_trades(from_ms, numpy_time_now_ms)
+        return self._select_recent_trades(from_ms, numpy_time_now_ms)
 
-def demo_get15min():
+def add_example_100trades(trade_series, count=100):
+    """ Gnerates 100 random trades to experiment with."""
+
+    for i in range(count):
+        numpy_time_now =  TimeUtils.numpy_time_now()      # np.datetime64(datetime.datetime.now(), 'ms')
+        ts = numpy_time_now - TimeUtils.numpy_time_delta_min(1*i-2)
+        t = Trade(timestamp=ts, \
+            quantity=3+(i % 5), buysell_type=Trade.BUY, trade_price=1.00)
+        t.invar()
+        trade_series.all_trades.append(t)
+    print repr(trade_series.all_trades)
+
+    #todo: refactor as a test
+    a1 = trade_series.get_numpy()
+    assert a1.shape == (count,)
+
+    #todo: refactor as a test
+    a1rec = trade_series.get_numpy_rec()
+    assert a1rec.shape == (count,)
+
+def test_get15min():
     # Get trades in past 15 minute
     ts1 = TradeSeries()
-    ts1.add_example_100trades()
-    #from_ms = now_ms - 15*TimeUtils.MIN
-    ts2 = ts1.get_recent_trades(15*TimeUtils.MIN)
-    print ">>ts<<", ts2
+    how_many_minutes = 15
+    count = 100
+    add_example_100trades(ts1, count=count)
+    ts1_recent_trades = ts1.select_recent_trades(how_many_minutes*TimeUtils.MIN)
+    selected_count = sum(1 for i in ts1_recent_trades)
+    #for i in ts1.all_trades: print i, ;print
+    #for i in ts1_recent_trades: print i, ;print
+    assert len(ts1.all_trades) == 100
+    assert selected_count == how_many_minutes
+
+def demo_get15min():
+    pass
 
 # main: test
 if __name__ == "__main__":
