@@ -41,3 +41,33 @@ class TradeSeries(object):
         #raise Exception("Not implemented "+str(from_ms)+" "+str(now_ms))
         return self._select_recent_trades(from_ms, numpy_time_now_ms)
 
+    VERBOSE = True
+    @staticmethod
+    def calculate_volume_weighted_stock_price(iterator):
+        """
+        Volume Weighted Stock Price
+        """
+        if TradeSeries.VERBOSE:
+            weighted_price_str = []
+            sum_weights_str = []
+            print
+
+        weighted_price = 0.0
+        sum_weights = 0.0
+        for trade in iterator:
+            weighted_price += trade.quantity * trade.price
+            sum_weights += trade.quantity
+
+            if TradeSeries.VERBOSE:
+                weighted_price_str.append(str(trade.quantity)+ "x" + str(trade.price))
+                sum_weights_str.append(str(trade.quantity))
+
+        if TradeSeries.VERBOSE:
+            print ":", " + ".join(weighted_price_str)
+            cnt = len(weighted_price_str) + 5
+            print "-" * (2*cnt), " div ", "-"*(2*cnt) 
+            print ":", " + ".join(sum_weights_str)
+
+        if sum_weights == 0.0:
+            raise Exception("No trade, sum(quantity) is zero.")
+        return weighted_price / sum_weights

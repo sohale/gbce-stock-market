@@ -55,3 +55,13 @@ class TimeUtils(object):
 class CurrencyUtils(object):
     GBP_symbol = u"£".encode( "utf-8" )
     # u"P"
+
+class TestUtils(object):
+    @staticmethod
+    def assertFloatEqual(testbject, arg1, arg2, tolerance=0.000001):
+        """ a.k.a. assertAlmostEqual() """
+        testbject.assertTrue( math.fabs(arg1 - arg2) < tolerance )
+
+    @staticmethod
+    def assertCurrencyEqual(testbject, arg1, arg2):
+        raise Exception("Not implemented yet.")
