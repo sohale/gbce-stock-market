@@ -4,13 +4,10 @@
 """ GBCS Stock Demo """
 
 import numpy as np
-import math
 import datetime
 
 from trade import Trade
-
-SEC = 1000
-MIN = SEC * 60
+from gbce_utils import TimeUtils
 
 class TradeSeries(object):
     """ An array of Trades, uses 'list' containting instances of a Trade class. """
@@ -19,12 +16,12 @@ class TradeSeries(object):
         """ Initialises an empty series """
         self.all_trades = []
 
-    def add_example_100trades(self, count=100):
+    def add_example_100trades(self, count=10):
         """ Gnerates 100 random trades to experiment with."""
 
         for i in range(count):
-            numpy_time_now = np.datetime64(datetime.datetime.now(), 'ms')
-            ts = numpy_time_now - np.timedelta64(MIN*1)
+            numpy_time_now =  TimeUtils.numpy_time_now()      # np.datetime64(datetime.datetime.now(), 'ms')
+            ts = numpy_time_now - TimeUtils.numpy_time_delta_min(1)
             t = Trade(timestamp=ts, \
                 quantity=3+(i % 5), buysell_type=Trade.BUY, trade_price=1.00)
             t.invar()
@@ -33,11 +30,11 @@ class TradeSeries(object):
 
         #todo: refactor as a test
         a1 = self.get_numpy()
-        assert a1.shape == (100,)
+        assert a1.shape == (10,)
 
         #todo: refactor as a test
         a1rec = self.get_numpy_rec()
-        assert a1rec.shape == (100,)
+        assert a1rec.shape == (10,)
 
     def get_numpy(self):
         return Trade.numpy_array(self.all_trades, use_rec=False)
@@ -53,10 +50,8 @@ class TradeSeries(object):
     def get_recent_trades(self, time_diff_ms): #(from_ms, to_ms=0):
         """ Makes a collection of Trades in the given length of history. Generator version. """
 
-        numpy_time_now_ms = np.datetime64(datetime.datetime.now(), 'ms')
-        if math.fabs(math.floor(time_diff_ms) - time_diff_ms) > 0.000000001:
-            raise Exception("time difference (delta) needs to be an integer, a factor of msec") 
-        from_ms = numpy_time_now_ms - np.timedelta64(time_diff_ms, 'ms')
+        numpy_time_now_ms = TimeUtils.numpy_time_now() #np.datetime64(datetime.datetime.now(), 'ms')
+        from_ms = numpy_time_now_ms - TimeUtils.numpy_time_delta_msec(time_diff_ms)
         #raise Exception("Not implemented "+str(from_ms)+" "+str(now_ms))
         return self._get_recent_trades(from_ms, numpy_time_now_ms)
 
@@ -64,8 +59,8 @@ def demo_get15min():
     # Get trades in past 15 minute
     ts1 = TradeSeries()
     ts1.add_example_100trades()
-    #from_ms = now_ms - 15*MIN
-    ts2 = ts1.get_recent_trades(15*MIN)
+    #from_ms = now_ms - 15*TimeUtils.MIN
+    ts2 = ts1.get_recent_trades(15*TimeUtils.MIN)
     print ">>ts<<", ts2
 
 # main: test
@@ -76,6 +71,7 @@ if __name__ == "__main__":
 
 
 # ===================================================================================
+import math
 
 def checkmoney(x):
     # actual absolute money, not rate (e.g. price per share)

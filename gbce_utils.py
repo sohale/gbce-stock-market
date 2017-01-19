@@ -1,6 +1,7 @@
 """ Utility functions for GBCE Simple Stock Market """
 
 import datetime
+import math
 import numpy as np
 
 class TypeUtils(object):
@@ -26,3 +27,23 @@ class TimeUtils(object):
     # ms	millisecond	+/- 2.9e9 years	[ 2.9e6 BC, 2.9e6 AD]
     # us	microsecond	+/- 2.9e6 years	[290301 BC, 294241 AD]
     # ns	nanosecond	+/- 292 years	[ 1678 AD, 2262 AD]
+
+    SEC = 1000
+    MIN = SEC * 60
+
+    @staticmethod
+    def numpy_time_now():
+        return np.datetime64(datetime.datetime.now(), 'ms')
+
+    @staticmethod
+    def numpy_time_delta_min(minutes):
+        assert TypeUtils.type_is_int(minutes)
+        # return np.timedelta64(TimeUtils.MIN*minutes, 'ms')
+        return TimeUtils.numpy_time_delta_msec(TimeUtils.MIN*minutes)
+
+    @staticmethod
+    def numpy_time_delta_msec(time_diff_ms):
+        if math.fabs(math.floor(time_diff_ms) - time_diff_ms) > 0.000000001:
+            raise Exception("time difference (delta) needs to be an integer, a factor of msec") 
+        assert TypeUtils.type_is_int(time_diff_ms)
+        return np.timedelta64(time_diff_ms, 'ms')
