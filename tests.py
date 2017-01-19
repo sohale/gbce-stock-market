@@ -41,18 +41,18 @@ class TradeTest(unittest.TestCase):
 
         assert t == Trade.numpy_2_trade(t.numpy())  # timestamp's units
 
-    def _assert_bad_trade(self, quantity, message_substring, no_exception=False):
+    def _assert_bad_trade_raises_exception(self, quantity, message_substring, causes_exception=True):
         with self.assertRaises(Exception) as context:
             t = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), quantity=quantity, buysell_type=Trade.BUY, trade_price=1.00)
             t.invar()
-        self.assertTrue(xor(message_substring in str(context.exception), bool(no_exception)))
+        self.assertTrue(xor(message_substring in str(context.exception), not bool(causes_exception)))
 
     def test_bad_trade(self):
-        """ Tests whether non-int types are corrected """
-        self._assert_bad_trade(13.01, 'Quantity has to be an integer')
-        self._assert_bad_trade(13.00, 'Quantity has to be an integer')
-        self._assert_bad_trade(0.00, 'Quantity has to be an integer')
-        self._assert_bad_trade(0.00, 'Quantity has to be an integer')
+        """ Tests whether non-int types are correctly detected """
+        self._assert_bad_trade_raises_exception(13.01, 'Quantity has to be an integer')
+        self._assert_bad_trade_raises_exception(13.00, 'Quantity has to be an integer')
+        self._assert_bad_trade_raises_exception(0.00, 'Quantity has to be an integer')
+        self._assert_bad_trade_raises_exception(0, 'Quantity has to be an integer', False)
 
 class MiscTests(unittest.TestCase):
     def tests_numpy_version(self):
