@@ -81,10 +81,12 @@ paid = fixmoney_floor(paid)
 checkmoney(paid)
 
 
-# =====================
+# ======End Points: calculate_*** methods ===============
+"""
+# Moved to class CompanyEntry:
 def calculate_dividend_yield(market_price):
     return -1
-
+"""
 def calculate_pe_ratio(market_price):
     return -1
 
