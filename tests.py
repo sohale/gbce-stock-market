@@ -11,8 +11,6 @@ from company import CompanyEntry
 from gbce_utils import TestUtils
 from gbce_utils import CurrencyUtils
 
-# assert np.version.full_version >= '1.11.2'
-
 class TradeTest(unittest.TestCase):
     """ Checks various things about instances of class Trade"""
 
@@ -20,16 +18,16 @@ class TradeTest(unittest.TestCase):
     def example_trade():
         """ Generates a Trade objects, used in multiple tests. """
         # Todo: should be in Pence (hundredth of a Pound, or in Pounds (GBP) with wo decimals)
-        #c = CompanyTest.example2()
-        c = None
+        c = CompanyTest.example2()
         trd = Trade(c, timestamp=np.datetime64('2005-02-25', 'ms'), \
             quantity=13, buysell_type=Trade.BUY, trade_price=1.00)
         trd.check()
-        return trd
+        companies_list = [ c ]  # !
+        return trd, companies_list
 
     def test_1(self):
         """ Contains multiple unit test."""
-        trd = TradeTest.example_trade()
+        trd, companies_list = TradeTest.example_trade()
         # print repr(trd.numpy())
         self.assertEqual(trd.numpy().shape, (1,))
         trd.check()
@@ -41,19 +39,20 @@ class TradeTest(unittest.TestCase):
     def test_recoding_test(self):
         """ Re-coding means encoding and decoding back from and to another representation
            (here, numpy versus class)"""
-        trd = TradeTest.example_trade()
-        print repr(Trade.numpy_2_trade(trd.numpy()))
-        recoded = Trade.numpy_2_trade(trd.numpy())
+        trd, companies_list = TradeTest.example_trade()
+        print repr(Trade.numpy_2_trade(trd.numpy(), companies_list))
+        recoded = Trade.numpy_2_trade(trd.numpy(), companies_list)
         print str(recoded)
         print recoded, trd, recoded == trd
 
         # Involves the timestamp's units
-        self.assertEqual(trd, Trade.numpy_2_trade(trd.numpy()))  # used __eq__
+        self.assertEqual(trd, Trade.numpy_2_trade(trd.numpy(), companies_list))  # used __eq__
 
     def assert_bad_trade_raises_exception(self, quantity, message_substring,\
             causes_exception=True):
+        company_obj = CompanyTest.example2()
         with self.assertRaises(Exception) as context:
-            trd = Trade(None, timestamp=np.datetime64('2005-02-25', 'ms'), \
+            trd = Trade(company_obj, timestamp=np.datetime64('2005-02-25', 'ms'), \
                 quantity=quantity, buysell_type=Trade.BUY, trade_price=1.00)
             trd.check()
         self.assertTrue(xor(message_substring in str(context.exception), \

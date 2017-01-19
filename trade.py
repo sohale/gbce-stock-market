@@ -32,9 +32,8 @@ class Trade(object):
     def check(self):
         """ Class Invariant: checks (asserts) consistency (validity) of the object's state. """
 
-        if self.company_obj is not None and not isinstance(self.company_obj, CompanyEntry):
+        if not isinstance(self.company_obj, CompanyEntry):
             raise Exception("Company object is not provided.")
-
 
         if not self.timestamp > TimeUtils.BIGBANG:
             raise Exception("timestamp went wrong")
@@ -63,10 +62,10 @@ class Trade(object):
         #enable usage `assert x.check`, which ignores this in `python -O3` optimised mode
         return True
 
+    # todo: use int for abbrev for faster selecting of the targte company on the numpy array
+    numpy_dtype = [('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4'), ('abbrev', 'S3')]
 
-    numpy_dtype = [('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')]
-
-    EXAMPLE1 = np.array([(TimeUtils.BIGBANG, 2, SELL, 1.0)], \
+    EXAMPLE1 = np.array([(TimeUtils.BIGBANG, 2, SELL, 1.0, 'ABC')], \
       dtype=numpy_dtype)
 
     EMPTY = np.array([], numpy_dtype)
@@ -78,7 +77,7 @@ class Trade(object):
 
     def numpy(self):
         #todo: @param: relative time difference reference
-        a1 = np.array([(self.timestamp, self.quantity, self.buysell, self.price)], \
+        a1 = np.array([ self.to_tuple() ], \
           dtype=Trade.numpy_dtype )
         # I keep the ints as signed to avoid accidental bugs, easire detection and tracing of of sign problems.
         # todo: price will be fixed-point int
@@ -98,17 +97,32 @@ class Trade(object):
             return np.rec.array(l, dtype=Trade.numpy_dtype )
 
     def to_tuple(self):
-        return (self.timestamp, self.quantity, self.buysell, self.price)
+        abbrv = self.company_obj.abbrev
+        assert len(abbrv) == 3
+        return (self.timestamp, self.quantity, self.buysell, self.price, abbrv)
 
 
+    
     @staticmethod
-    def numpy_2_trade(a):
+    def numpy_2_trade(a, companies):
         assert a.shape == (1,)
         # fixme: select those companies only based on their three-etter code
-        company = None
-        obj = Trade(company, a[0]['timestamp'], a[0]['quantity'], a[0]['buysell'], a[0]['price'])
-        obj.check()
-        return obj
+        def lookup_company(company_abbr, companies_list):
+            assert len(company_abbr) == 3
+            for c in companies_list:
+                if c.abbrev == company_abbr:
+                    return c
+            raise Exception("company not found from the name (abbreviation): "+repr(company_abbr))
+
+        def one_trade_element(a, i):
+            abbrv = a[i]['abbrev']
+            company = lookup_company(abbrv, companies);
+            obj = Trade(company, a[i]['timestamp'], a[i]['quantity'], a[i]['buysell'], a[i]['price'])
+            obj.check()
+            return obj
+
+        i = 0
+        return one_trade_element(a, i)
 
     def currency_symbol(self):
         # return u"£".encode( "utf-8" )
