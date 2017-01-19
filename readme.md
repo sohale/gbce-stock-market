@@ -21,7 +21,7 @@ Currently three representations of TradeSeries are implemented.
 * A Python list of Trade objects
 * A numpy array of a struct. 
 * A numpy record-array, i.e. a series of numpy arrays for each attributes
-* A selection of a list of Trade objects, i.e. a generator on the list object. This is generated from 
+* A selection of a list of Trade objects, i.e. a generator on the list object.
 
 All these formats are convertible to each other, and each is suitable for one form of computation. e.g. in-memory, batch processing, etc.
 
