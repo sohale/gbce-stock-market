@@ -9,6 +9,7 @@ from operator import xor
 from trade import Trade
 from company import CompanyEntry
 from gbce_utils import TestUtils
+from gbce_utils import CurrencyUtils
 
 # assert np.version.full_version >= '1.11.2'
 
@@ -185,6 +186,16 @@ class TradeSeriesTest(unittest.TestCase):
         TestUtils.assertFloatEqual(self, asi, 1.0)
 
 
+class CurrencyUtilsTest(unittest.TestCase):
+
+    def test_currencyUtils(self):
+        market_price = 1.00
+        shares = 4
+        paid = CurrencyUtils.fixmoney_floor(market_price * shares)
+        #CurrencyUtils.checkmoney(paid)
+
+        paid = CurrencyUtils.fixmoney_floor(paid)
+        CurrencyUtils.checkmoney(paid)
 
 if __name__ == '__main__':
     import doctest
