@@ -3,27 +3,22 @@
 
 """ GBCS Stock Demo """
 
-#from trade import Trade
-#from gbce_utils import TimeUtils
-
-
 def demo_get15min():
-    pass
+    print 'Please run "python tests.py" instead'
 
-# main: test
 if __name__ == "__main__":
-
     demo_get15min()
 
 
 
 # ===================================================================================
-import math
 
 def checkmoney(x):
-    # actual absolute money, not rate (e.g. price per share)
-    # Makes sure the amount is in cents, not less
-    assert abs(int(x*100)- (x*100)) < 0.000001
+    """
+    Used for an actual absolute amount of money, not rate or price per share, etc
+    Makes sure the amount is in cents, i.e. has two decimals, and not a fraction of a Cent/Pence.
+    """
+    assert abs(int(x*100)- (x*100)) < 0.0000001
 
 def fixmoney_floor(x):
     result = math.floor(x*100) * 0.0100000000
@@ -48,25 +43,3 @@ paid = fixmoney_floor(market_price * shares)
 
 paid = fixmoney_floor(paid)
 checkmoney(paid)
-
-
-# ======End Points: calculate_*** methods ===============
-"""
-# Moved to class CompanyEntry:
-def calculate_dividend_yield(market_price):
-    return -1
-"""
-def calculate_pe_ratio(market_price):
-    return -1
-
-def record_trade(self, timestamp, share_count, buy_notsell, trade_price):
-    return -1
-
-def calculate_Volume_Weighted_Stock_Price(self):
-    return -1
-
-# b. Calculate the GBCE All Share Index using the geometric mean of prices for all stocks
-def calculate_GBCE(self):
-    return -1
-
-# dividend_yield =
