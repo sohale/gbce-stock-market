@@ -35,5 +35,9 @@ class Market(object):
             obj.check()
             return obj
 
-        i = 0
-        return one_trade_element(numpy_arr, i)
+        assert len(numpy_arr.shape) == 1
+        trades_list = []
+        for i in xrange(numpy_arr.shape[0]):
+            trd = one_trade_element(numpy_arr, i)
+            trades_list.append(trd)
+        return trades_list

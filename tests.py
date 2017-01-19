@@ -42,13 +42,15 @@ class TradeTest(unittest.TestCase):
         """ Re-coding means encoding and decoding back from and to another representation
            (here, numpy versus class)"""
         trd, companies_list = TradeTest.example_trade()
-        print repr(Market.numpy_2_trade(trd.numpy(), companies_list))
-        recoded = Market.numpy_2_trade(trd.numpy(), companies_list)
+        decoded_trades_list = Market.numpy_2_trade(trd.numpy(), companies_list)
+        self.assertEqual(len(decoded_trades_list), 1 )
+        print repr(decoded_trades_list[0])
+        recoded = decoded_trades_list[0]
         print "**************", str(recoded)
         print recoded, trd, recoded == trd
 
         # Involves the timestamp's units
-        self.assertEqual(trd, Market.numpy_2_trade(trd.numpy(), companies_list))  # used __eq__
+        self.assertEqual(trd, decoded_trades_list[0])  # used __eq__
 
     def assert_bad_trade_raises_exception(self, quantity, message_substring,\
             causes_exception=True):
