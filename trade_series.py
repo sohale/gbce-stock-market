@@ -9,7 +9,8 @@ from trade import Trade
 from gbce_utils import TimeUtils
 
 class TradeSeries(object):
-    """ An array of Trades, uses 'list' containting instances of a Trade class. """
+    """ An array of Trades, uses 'list' containting instances of a Trade class. 
+    Ther are alternative representations possible. See the get_numpy() method."""
 
     def __init__(self):
         """ Initialises an empty series """

@@ -29,7 +29,6 @@ class Trade(object):
         self.price = trade_price
         self.check()
 
-
     def check(self):
         """ Class Invariant: checks (asserts) consistency (validity) of the object's state. """
 
@@ -102,33 +101,9 @@ class Trade(object):
         assert len(abbrv) == 3
         return (self.timestamp, self.quantity, self.buysell, self.price, abbrv)
 
-
-    
-    @staticmethod
-    def numpy_2_trade(a, companies):
-        assert a.shape == (1,)
-        # fixme: select those companies only based on their three-etter code
-        def lookup_company(company_abbr, companies_list):
-            assert len(company_abbr) == 3
-            assert type(companies_list) is dict
-            for abbrev,c in companies_list.iteritems():
-                assert abbrev == c.abbrev
-                if c.abbrev == company_abbr:
-                    return c
-            raise Exception("company not found from the name (abbreviation): "+repr(company_abbr))
-
-        def one_trade_element(a, i):
-            abbrv = a[i]['abbrev']
-            company = lookup_company(abbrv, companies)
-            obj = Trade(company, a[i]['timestamp'], a[i]['quantity'], a[i]['buysell'], a[i]['price'])
-            obj.check()
-            return obj
-
-        i = 0
-        return one_trade_element(a, i)
+    # For numpy_2_trade() see Market
 
     def currency_symbol(self):
-        # return u"£".encode( "utf-8" )
         return CurrencyUtils.GBP_symbol
 
     def __repr__(self):

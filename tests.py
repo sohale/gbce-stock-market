@@ -11,6 +11,8 @@ from company import CompanyEntry
 from gbce_utils import TestUtils
 from gbce_utils import CurrencyUtils
 
+from market import Market
+
 class TradeTest(unittest.TestCase):
     """ Checks various things about instances of class Trade"""
 
@@ -18,7 +20,7 @@ class TradeTest(unittest.TestCase):
     def example_trade():
         """ Generates a Trade objects, used in multiple tests. """
         # Todo: should be in Pence (hundredth of a Pound, or in Pounds (GBP) with wo decimals)
-        c = CompanyTest.example2()
+        c = CompanyTest.example_company2()
         trd = Trade(c, timestamp=np.datetime64('2005-02-25', 'ms'), \
             quantity=13, buysell_type=Trade.BUY, trade_price=1.00)
         trd.check()
@@ -40,17 +42,17 @@ class TradeTest(unittest.TestCase):
         """ Re-coding means encoding and decoding back from and to another representation
            (here, numpy versus class)"""
         trd, companies_list = TradeTest.example_trade()
-        print repr(Trade.numpy_2_trade(trd.numpy(), companies_list))
-        recoded = Trade.numpy_2_trade(trd.numpy(), companies_list)
+        print repr(Market.numpy_2_trade(trd.numpy(), companies_list))
+        recoded = Market.numpy_2_trade(trd.numpy(), companies_list)
         print "**************", str(recoded)
         print recoded, trd, recoded == trd
 
         # Involves the timestamp's units
-        self.assertEqual(trd, Trade.numpy_2_trade(trd.numpy(), companies_list))  # used __eq__
+        self.assertEqual(trd, Market.numpy_2_trade(trd.numpy(), companies_list))  # used __eq__
 
     def assert_bad_trade_raises_exception(self, quantity, message_substring,\
             causes_exception=True):
-        company_obj = CompanyTest.example2()
+        company_obj = CompanyTest.example_company2()
         with self.assertRaises(Exception) as context:
             trd = Trade(company_obj, timestamp=np.datetime64('2005-02-25', 'ms'), \
                 quantity=quantity, buysell_type=Trade.BUY, trade_price=1.00)
@@ -98,8 +100,12 @@ class CompanyTest(unittest.TestCase):
         return tlist
 
     @staticmethod
-    def example2():
+    def example_company1():
         return CompanyEntry('TEA', CompanyEntry.CT.COMMON, 0, None, 100)
+
+    @staticmethod
+    def example_company2():
+        return CompanyEntry('GIN', CompanyEntry.CT.PREFERRED, 8, 2, 100)
 
     def test_GBCE_company_etries(self):
         tlist = CompanyTest.example1()
@@ -125,7 +131,7 @@ class TradeSeriesTest(unittest.TestCase):
             numpy_time_now = TimeUtils.numpy_time_now()
             OFFSET = -2  # To make sure it includes all of it, even depite being end-exlusive
             ts = numpy_time_now - TimeUtils.numpy_time_delta_min(1*i + OFFSET)
-            c = CompanyTest.example2()
+            c = CompanyTest.example_company2()
             trd = Trade(c, timestamp=ts, \
                 quantity=3+(i % 5), buysell_type=Trade.BUY, trade_price=1.00)
             trd.check()
@@ -165,7 +171,7 @@ class TradeSeriesTest(unittest.TestCase):
         self.assertEqual(selected_count, how_many_minutes)
 
     def test_volume_weighted_stock_price(self):
-        company_code = 'TEA'  # None  # must be a specific company
+        company_code = 'GIN' #'TEA'  # None  # must be a specific company
         how_many_minutes = 15
         count = 100  # fixme: make sure this covers beyond number of minutes from both sides
         selected_trades_iter = TradeSeriesTest.select_15min(how_many_minutes, count, self, company_code=company_code)
