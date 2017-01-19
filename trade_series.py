@@ -26,14 +26,31 @@ class TradeSeries(object):
         return Trade.numpy_array(self.all_trades, use_rec=True)
 
     def _select_recent_trades(self, from_ms, to_ms, company_code):
-        """ Selected a set of Trades in the given interval. Generator version. """
-        if from_ms > to_ms:
-            raise Exception("Usage error: Incorrect range.start is after end end of the time interval's range.")
-        if from_ms == to_ms:
-            raise Exception("Usage error: Empty range. The end of the range is not inclusive.")
+        """ Selected a set of Trades in the given interval. Generator version. Thre usages:
+        
+        ts._select_recent_trades(from_ms, to_ms, company_code) # selects trades of a company that are within an interval 
+        ts._select_recent_trades(from_ms, to_ms, None)  # selects the trades in a given interval regardless of the company. For a specifi history length, use select_recent_trades() instead.
+        ts._select_recent_trades(None, None, company_code)  # selects trades of the given company
+        """
+        if from_ms == None and to_ms == None:
+            skip_time_interval = True
+        else:
+            skip_time_interval = False
+
+        if company_code is None:
+            skip_company = True
+        else:
+            skip_company = False
+
+        if not skip_time_interval:
+            if from_ms > to_ms:
+                raise Exception("Usage error: Incorrect range.start is after end end of the time interval's range.")
+            if from_ms == to_ms:
+                raise Exception("Usage error: Empty range. The end of the range is not inclusive.")
+
         for t in self.all_trades:
-            if t.timestamp >= from_ms and t.timestamp < to_ms:
-                if company_code is None or (t.company_obj is not None and t.company_obj.abbrev == company_code):
+            if skip_time_interval or (t.timestamp >= from_ms and t.timestamp < to_ms):
+                if skip_company or (t.company_obj is not None and t.company_obj.abbrev == company_code):
                     yield t
 
     def select_recent_trades(self, time_diff_ms, company_code): #(from_ms, to_ms=0):
@@ -44,6 +61,17 @@ class TradeSeries(object):
         from_ms = numpy_time_now_ms - TimeUtils.numpy_time_delta_msec(time_diff_ms)
         #raise Exception("Not implemented "+str(from_ms)+" "+str(now_ms))
         return self._select_recent_trades(from_ms, numpy_time_now_ms, company_code)
+
+    def select_company_trades(self, company_code):
+        """ Makes a collection of Trades for a specific company.
+        If you need a pecifict company and a specific time range, used _select_recent_trades() instead.
+        """
+        return self._select_recent_trades(None, None, company_code)
+
+    def select_all_trades(self):
+        """ Selects all trades, all companies. For All-Index, etc. Equivalent to returning self.all_trades 
+        """
+        return self._select_recent_trades(None, None, None)
 
     VERBOSE = True
 

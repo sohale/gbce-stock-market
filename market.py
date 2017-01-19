@@ -45,3 +45,4 @@ class Market(object):
     # non-static version
     def numpy_2_trade_(self, numpy_arr):
         return _numpy_2_trade(numpy_arr, self.companies_dict)
+
