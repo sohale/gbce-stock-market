@@ -22,7 +22,7 @@ class CompanyEntry(object):
         COMMON Stock:
         In the case of common stock the par value per share is usually a very small amount such as $0.10 or $0.01 or $0.001 and it has no connection to the market value of the share of stock
         It is not often mentioned for the `common stock` because it is arbitrary.
-        The par Value is a static value, unlike `market value` which can fluctuate on a daily basis. 
+        The par Value is a static value, unlike `market value` which can fluctuate on a daily basis.
         ref: http://www.investopedia.com/terms/a/at-par.asp
 
 
@@ -108,12 +108,29 @@ class CompanyEntry(object):
             # is 'last_dividend' ignored?
             return self.fixed_dividend * self.par_value / market_price
 
-    def PE_ratio(self, market_price):
-        """ I am very unsure about this. Domain knowledge is required. I write it based on my best judgement. 
-        Problem: Division by zero. """
-        dividend = self.calculate_dividend_yield(market_price)
-        assert dividend > 0, "dividend cannot be zero for P/E ratio " + repr(dividend)
-        return market_price / dividend
+    def PE_ratio(self, market_share_price):
+        """ I am very unsure about this. Domain knowledge is required. I write it based on my best judgement.
+        Problem: Division by zero.
 
-    def report_company(self, market_price):
-        return repr(self) + " P/E=" + self.PE_ratio(market_price) + " DivYield=" + CurrencyUtils.GBP_symbol + str(self.calculate_dividend_yield(market_price))
+        Market Value per Share / Earnings per Share.
+        EPS is most often derived from the last four quarters.
+        The price-earnings ratio (P/E Ratio) is the ratio for valuing a company that measures its current share price relative to its per-share earnings.
+        The price-earnings ratio   :=   Market Value per Share / Earnings per Share
+        Ref: http://www.investopedia.com/terms/p/price-earningsratio.asp
+
+        Specified in the assignment: PE = market_price / dividend
+
+        Question: What is dividend is zero; e.g. a Common Stock where Last Dividened is zero (see example 'TEA').
+
+        @param market_share_price: aka market_price, Market Value per Share.
+        """
+        dividend = self.calculate_dividend_yield(market_share_price)
+        earnings_per_share = dividend
+        #assert dividend > 0, "dividend cannot be zero for P/E ratio " + repr(dividend)
+        if not dividend > 0:
+            print "Warning: ", "Dividend cannot be zero for P/E ratio " + repr(dividend)
+            return -1.0
+        return market_share_price / earnings_per_share
+
+    def report_company_info(self, market_share_price):
+        return repr(self) + "  ......  P/E=" + str(self.PE_ratio(market_share_price)) + " ...... DivYield=" + CurrencyUtils.GBP_symbol + str(self.calculate_dividend_yield(market_share_price))

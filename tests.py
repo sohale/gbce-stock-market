@@ -90,7 +90,7 @@ class CompanyTest(unittest.TestCase):
         t4 = CompanyEntry('JOE', CompanyEntry.CT.COMMON, 13, None, 250)
         print "Report based on market_value = 1.00 GBP for all comapnies:"
         tlist = [t0, t1, t2, t3, t4]
-        for t in tlist: print t.calculate_dividend_yield(1.0), t.report_company(1.0)
+        for t in tlist: print t.calculate_dividend_yield(1.0), t.report_company_info(1.0)
 
         # These numbers are not verified:
         self.assertEqual(tlist[0].calculate_dividend_yield(1.0), 0.0)
