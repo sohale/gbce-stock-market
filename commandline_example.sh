@@ -1,8 +1,8 @@
 # Commandline example
-./gbce.py init
+./gbce init
 # python p1.py company abc 12 50  # causes error
-./gbce.py company ABC 12 50 
-./gbce.py company JUC 15 30 
-./gbce.py show
-./gbce.py show
-./gbce.py deliberately_causing_error
+./gbce company ABC 12 50 
+./gbce company JUC 15 30 
+./gbce show
+./gbce show
+./gbce deliberately_causing_error
