@@ -126,14 +126,19 @@ from gbce_utils import TimeUtils
 
 class TradeSeriesTest(unittest.TestCase):
     @staticmethod
-    def _generate_example_100trades(testSelf, trade_series, count=100):
+    def _generate_example_100trades(testSelf, trade_series, count=100, randomise_mixed_companies=False):
         """ Gnerates 100 random trades to experiment with."""
 
+        c2 = CompanyTest.example_company2()
+        c1 = CompanyTest.example_company1()
         for i in range(count):
             numpy_time_now = TimeUtils.numpy_time_now()
             OFFSET = -2  # To make sure it includes all of it, even depite being end-exlusive
             ts = numpy_time_now - TimeUtils.numpy_time_delta_min(1*i + OFFSET)
-            c = CompanyTest.example_company2()
+            if randomise_mixed_companies:
+                c = c1 if np.random.rand() < 0.7 else c2
+            else:
+                c = c2
             trd = Trade(c, timestamp=ts, \
                 quantity=3+(i % 5), buysell_type=Trade.BUY, trade_price=1.00)
             trd.check()
@@ -206,8 +211,42 @@ class CurrencyUtilsTest(unittest.TestCase):
 
 class MarketTest(unittest.TestCase):
 
-    def test_market1(self):
-        pass
+    def test_market_numpy1_select_then_numpy(self):
+        """ First selects the trades using a selector, then convertsinto a numpy array representation.
+
+        Filtering can be done either before (here) or after (*1) conversion into numpy.
+        *1 : See `test_market_numpy2_mixed()`
+        """
+        count = 100
+        selected_company_code = 'GIN'
+        how_many_minutes = 1500
+        market = Market()
+        TradeSeriesTest._generate_example_100trades(self, market.trade_series, count=count, randomise_mixed_companies=True)
+        trades_iterable = market.trade_series.select_recent_trades(how_many_minutes*TimeUtils.MIN, company_code=selected_company_code)
+        n = market.make_numpy(trades_iterable)
+        print "big numpy shape: ", n.shape  # typical result: (31,)
+
+    def test_market_numpy2_mixed(self):
+        """ First converts the whole market into a numpy array representation,
+        then selects using numpy. Fast operations: Suitable for operations on
+        large numbers of trades.
+        
+        Filtering can be done either before (*2) or after (here) conversion into numpy.
+        *2: See `test_market_numpy1_select_then_numpy()`
+        """
+        count = 1000
+
+        market = Market()
+        TradeSeriesTest._generate_example_100trades(self, market.trade_series, 
+            count=count, randomise_mixed_companies=True)
+        trades_iterable = market.trade_series.select_all_trades()
+        n = market.make_numpy(trades_iterable)
+        self.assertEqual(n.shape, (count,))
+        print "big numpy shape: ", n.shape
+        print n
+        n_gin = n[n['abbrev']=='GIN']
+        n_tea = n[n['abbrev']=='TEA']
+        # good for plotting, etc
 
 if __name__ == '__main__':
     import doctest

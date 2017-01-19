@@ -7,7 +7,7 @@ class Market(object):
     """ List of companies. Also holds a TradeSeries for them."""
     def __init__(self):
         self.companies_dict = {}
-        self.trade_sries = TradeSeries()
+        self.trade_series = TradeSeries()
 
     # fixme: select those companies only based on their three-etter code
     @staticmethod
@@ -44,5 +44,9 @@ class Market(object):
 
     # non-static version
     def numpy_2_trade_(self, numpy_arr):
-        return _numpy_2_trade(numpy_arr, self.companies_dict)
+        return Market._numpy_2_trade(numpy_arr, self.companies_dict)
 
+    def make_numpy(self, iterable, use_rec=False):
+        return Trade.numpy_array(iterable, use_rec)
+
+    #todo: pandas dataframe representation

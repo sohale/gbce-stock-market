@@ -84,9 +84,10 @@ class Trade(object):
         return a1
 
     @staticmethod
-    def numpy_array(list_of_trades, use_rec):
+    def numpy_array(iterable_trades, use_rec):
+        """ Converts trades into a numpy array. the iterable_trades can be either a list of any iterable."""
         l = []
-        for t in list_of_trades:
+        for t in iterable_trades:
             assert t.check()
             l.append(t.to_tuple())
 
