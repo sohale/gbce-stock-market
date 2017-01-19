@@ -71,7 +71,7 @@ class Trade(object):
         return a1
 
     @staticmethod
-    def numpy_array(list_of_trades,use_rec):
+    def numpy_array(list_of_trades, use_rec):
         l = []
         for t in list_of_trades:
             assert t.invar()
