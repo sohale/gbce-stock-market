@@ -12,6 +12,7 @@ from gbce_utils import TestUtils
 from gbce_utils import CurrencyUtils
 
 from market import Market
+from numpy_trades import NumpyTrades
 
 class TradeTest(unittest.TestCase):
     """ Checks various things about instances of class Trade"""
@@ -44,10 +45,11 @@ class TradeTest(unittest.TestCase):
         trd, companies_list = TradeTest.example_trade()
         decoded_trades_list = Market._numpy_2_trade(trd.numpy(), companies_list)
         self.assertEqual(len(decoded_trades_list), 1 )
-        print repr(decoded_trades_list[0])
+        # print repr(decoded_trades_list[0])
         recoded = decoded_trades_list[0]
-        print "**************", str(recoded)
-        print recoded, trd, recoded == trd
+        # print "**************", str(recoded)
+        # print recoded, trd, recoded == trd
+        self.assertEqual(recoded, trd)
 
         # Involves the timestamp's units
         self.assertEqual(trd, decoded_trades_list[0])  # used __eq__
@@ -181,9 +183,10 @@ class TradeSeriesTest(unittest.TestCase):
         company_code = 'GIN' #'TEA'  # None  # must be a specific company
         how_many_minutes = 15
         count = 100  # fixme: make sure this covers beyond number of minutes from both sides
+        print "Volume Weighted Stock Price: ",
         selected_trades_iter = TradeSeriesTest.generate_and_select_15min(how_many_minutes, count, self, company_code=company_code)
         vwsp =TradeSeries.calculate_volume_weighted_stock_price(selected_trades_iter)
-        print "Volume Weighted Stock Price: " , vwsp
+        print "Volume Weighted Stock Price: ", vwsp
         TestUtils.assertFloatEqual(self, vwsp, 1.0)  # 1.0 because all prices are 1.0, soany weighted average will be 1.0
 
     def test_GBCE_AllShare_Index(self):
@@ -192,9 +195,10 @@ class TradeSeriesTest(unittest.TestCase):
         """
         how_many_minutes = 15
         count = 100  # fixme: make sure this covers beyond number of minutes from both sides
+        print "All-Share Index: ",
         selected_trades_iter = TradeSeriesTest.generate_and_select_15min(how_many_minutes, count, self, None)   # all companies
         asi = TradeSeries.calculate_geometric_mean(selected_trades_iter)
-        print "All-Share Index: " , asi
+        print "All-Share Index: ", asi
         TestUtils.assertFloatEqual(self, asi, 1.0)
 
 
@@ -224,7 +228,7 @@ class MarketTest(unittest.TestCase):
         TradeSeriesTest._generate_example_100trades(self, market.trade_series, count=count, randomise_mixed_companies=True)
         trades_iterable = market.trade_series.select_recent_trades(how_many_minutes*TimeUtils.MIN, company_code=selected_company_code)
         n = market.make_numpy(trades_iterable)
-        print "big numpy shape: ", n.shape  # typical result: (31,)
+        # print "big numpy shape: ", n.shape  # typical result: (31,)
 
     def test_market_numpy2_mixed(self):
         """ First converts the whole market into a numpy array representation,
@@ -242,11 +246,28 @@ class MarketTest(unittest.TestCase):
         trades_iterable = market.trade_series.select_all_trades()
         n = market.make_numpy(trades_iterable)
         self.assertEqual(n.shape, (count,))
-        print "big numpy shape: ", n.shape
-        print n
+        # print "big numpy shape: ", n.shape
+        # print n
+
+        # Exmaple usage of numpy:
+        # good for plotting, etc
         n_gin = n[n['abbrev']=='GIN']
         n_tea = n[n['abbrev']=='TEA']
-        # good for plotting, etc
+
+        # Other usages:
+        # q = n['quantity']
+        # p = n['price']
+        # bs = n['buysell']
+        # com = n['abbrev']  #company
+        # #q[com=='GIN']
+        # #print q.shape
+
+        # All prices are 1.0 for now.
+        weighted_mean = NumpyTrades.calculate_volume_weighted_stock_price(n_gin)
+        geometric_mean = NumpyTrades.calculate_geometric_mean(n)
+        print {'weighted_mean': weighted_mean, 'geometric_mean':geometric_mean}
+        TestUtils.assertFloatEqual(self, weighted_mean, 1.0)
+        TestUtils.assertFloatEqual(self, geometric_mean, 1.0)
 
 if __name__ == '__main__':
     import doctest

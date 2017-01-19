@@ -96,10 +96,10 @@ class TradeSeries(object):
                 sum_weights_str.append(str(trade.quantity))
 
         if TradeSeries.VERBOSE:
-            print ":", " + ".join(weighted_price_str)
+            print "", " + ".join(weighted_price_str)
             cnt = len(weighted_price_str) + 5
             print "-" * (2*cnt), " div ", "-"*(2*cnt) 
-            print ":", " + ".join(sum_weights_str)
+            print "", " + ".join(sum_weights_str)
 
         if sum_weights == 0.0:
             raise Exception("No trade, sum(quantity) is zero.")
