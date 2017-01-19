@@ -9,37 +9,38 @@ import datetime
 
 from trade import Trade
 
+class TradeSeries(object):
+    """ An array of Trades, list version using Trade class. """
+    def example_100trades(self, count=100):
+        """ Gnerates 100 random trades to experiment with."""
+        all_trades = []
 
+        for i in range(count):
+            t = Trade(timestamp=np.datetime64(datetime.datetime.now(), 'ms'), \
+                quantity=3+(i % 5), buysell_type=Trade.BUY, trade_price=1.00)
+            t.invar()
+            all_trades.append(t)
+        print repr(all_trades)
 
-def example_100trades():
-    """ Gnerates 100 random trades to experiment with."""
-    all_trades = []
+        a1 = Trade.numpy_array(all_trades, False)
+        a1rec = Trade.numpy_array(all_trades, True)
+        assert a1.shape == (100,)
+        assert a1rec.shape == (100,)
 
+    def get_recent_trades(self, time_diff_ms): #(from_ms, to_ms=0):
+        """ Makes a collection of Trades in the given interval."""
+        now_ms = np.datetime64(datetime.datetime.utcnow(), 'ms')
+        from_ms = now_ms - time_diff_ms
+        raise Exception("Not implemented "+str(from_ms)+" "+str(now_ms))
 
-    for i in range(100):
-        t = Trade(timestamp=np.datetime64(datetime.datetime.now(), 'ms'), \
-            quantity=3+(i % 5), buysell_type=Trade.BUY, trade_price=1.00)
-        t.invar()
-        all_trades.append(t)
-    print repr(all_trades)
-
-    a1 = Trade.numpy_array(all_trades, False)
-    a1rec = Trade.numpy_array(all_trades, True)
-    assert a1.shape == (100,)
-    assert a1rec.shape == (100,)
-
-def get_recent_trades(time_diff_ms): #(from_ms, to_ms=0):
-    """ Makes a collection of Trades in the given interval."""
-    now_ms = np.datetime64(datetime.datetime.utcnow(), 'ms')
-    from_ms = now_ms - time_diff_ms
-    raise Exception("Not implemented "+str(from_ms)+" "+str(now_ms))
+SEC = 1000
+MIN = SEC * 60
 
 def demo_get15min():
     # Get trades in past 15 minute
-    SEC = 1000
-    MIN = SEC * 60
+    ts1 = TradeSeries()
     #from_ms = now_ms - 15*MIN
-    ts = get_recent_trades(15*MIN)
+    ts2 = ts1.get_recent_trades(15*MIN)
     print ">>ts<<", ts
 
 # main: test
