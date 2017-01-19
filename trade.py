@@ -101,7 +101,7 @@ class Trade(object):
         assert len(abbrv) == 3
         return (self.timestamp, self.quantity, self.buysell, self.price, abbrv)
 
-    # For numpy_2_trade() see Market
+    # For _numpy_2_trade() see Market
 
     def currency_symbol(self):
         return CurrencyUtils.GBP_symbol

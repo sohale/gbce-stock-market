@@ -11,10 +11,10 @@ class Market(object):
 
     # fixme: select those companies only based on their three-etter code
     @staticmethod
-    def lookup_company1(company_abbr, companies_list):
+    def lookup_company1(company_abbr, companies_dict):
         assert len(company_abbr) == 3
-        assert type(companies_list) is dict
-        for abbrev,c in companies_list.iteritems():
+        assert type(companies_dict) is dict
+        for abbrev,c in companies_dict.iteritems():
             assert abbrev == c.abbrev
             if c.abbrev == company_abbr:
                 return c
@@ -24,7 +24,7 @@ class Market(object):
         return Market.lookup_company1(company_abbr, self.companies_dict)
 
     @staticmethod
-    def numpy_2_trade(numpy_arr, companies_dict):
+    def _numpy_2_trade(numpy_arr, companies_dict):
         assert numpy_arr.shape == (1,)
 
         # fixme: select those companies only based on their three-etter code
@@ -41,3 +41,7 @@ class Market(object):
             trd = one_trade_element(numpy_arr, i)
             trades_list.append(trd)
         return trades_list
+
+    # non-static version
+    def numpy_2_trade_(self, numpy_arr):
+        return _numpy_2_trade(numpy_arr, self.companies_dict)
