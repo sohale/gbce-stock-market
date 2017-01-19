@@ -126,7 +126,7 @@ from gbce_utils import TimeUtils
 
 class TradeSeriesTest(unittest.TestCase):
     @staticmethod
-    def _add_example_100trades(testSelf, trade_series, count=100):
+    def _generate_example_100trades(testSelf, trade_series, count=100):
         """ Gnerates 100 random trades to experiment with."""
 
         for i in range(count):
@@ -149,13 +149,13 @@ class TradeSeriesTest(unittest.TestCase):
         testSelf.assertEqual(a1rec.shape, (count,))  # This is not the main purpose of the test though
 
     @staticmethod
-    def select_15min(how_many_minutes, count, testSelf, company_code):
+    def generate_and_select_15min(how_many_minutes, count, testSelf, company_code):
         """
         @param company_code: company_code can be None, in that case
         """
         # Gets trades in past 15 minute
         ts1 = TradeSeries()
-        TradeSeriesTest._add_example_100trades(testSelf, ts1, count=count)
+        TradeSeriesTest._generate_example_100trades(testSelf, ts1, count=count)
         ts1_recent_trades = ts1.select_recent_trades(how_many_minutes*TimeUtils.MIN, company_code=company_code)
         testSelf.assertEqual(len(ts1.all_trades), count)
         return ts1_recent_trades
@@ -165,7 +165,7 @@ class TradeSeriesTest(unittest.TestCase):
         company_code = None
         how_many_minutes = 15
         count = 100  # fixme: make sure this covers beyond number of minutes from both sides
-        ts1_recent_trades = TradeSeriesTest.select_15min(how_many_minutes, count, self, company_code=company_code)
+        ts1_recent_trades = TradeSeriesTest.generate_and_select_15min(how_many_minutes, count, self, company_code=company_code)
 
         selected_count = sum(1 for i in ts1_recent_trades)
         #for i in ts1.all_trades: print i, ;print
@@ -176,7 +176,7 @@ class TradeSeriesTest(unittest.TestCase):
         company_code = 'GIN' #'TEA'  # None  # must be a specific company
         how_many_minutes = 15
         count = 100  # fixme: make sure this covers beyond number of minutes from both sides
-        selected_trades_iter = TradeSeriesTest.select_15min(how_many_minutes, count, self, company_code=company_code)
+        selected_trades_iter = TradeSeriesTest.generate_and_select_15min(how_many_minutes, count, self, company_code=company_code)
         vwsp =TradeSeries.calculate_volume_weighted_stock_price(selected_trades_iter)
         print "Volume Weighted Stock Price: " , vwsp
         TestUtils.assertFloatEqual(self, vwsp, 1.0)  # 1.0 because all prices are 1.0, soany weighted average will be 1.0
@@ -187,7 +187,7 @@ class TradeSeriesTest(unittest.TestCase):
         """
         how_many_minutes = 15
         count = 100  # fixme: make sure this covers beyond number of minutes from both sides
-        selected_trades_iter = TradeSeriesTest.select_15min(how_many_minutes, count, self, None)   # all companies
+        selected_trades_iter = TradeSeriesTest.generate_and_select_15min(how_many_minutes, count, self, None)   # all companies
         asi = TradeSeries.calculate_geometric_mean(selected_trades_iter)
         print "All-Share Index: " , asi
         TestUtils.assertFloatEqual(self, asi, 1.0)
@@ -203,6 +203,11 @@ class CurrencyUtilsTest(unittest.TestCase):
 
         paid = CurrencyUtils.fixmoney_floor(paid)
         CurrencyUtils.checkmoney(paid)
+
+class MarketTest(unittest.TestCase):
+
+    def test_market1(self):
+        pass
 
 if __name__ == '__main__':
     import doctest
