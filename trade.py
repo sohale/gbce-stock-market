@@ -4,7 +4,8 @@
 import numpy as np
 import datetime
 
-from gbce_utils import GBCEUtils
+from gbce_utils import TypeUtils
+from gbce_utils import TimeUtils
 
 class Trade(object):
 
@@ -23,10 +24,10 @@ class Trade(object):
 
     def invar(self):
         """ Class Invariant: checks (asserts) consistency (validity) of the object's state. """
-        if not self.timestamp > GBCEUtils.BIGBANG:
+        if not self.timestamp > TimeUtils.BIGBANG:
             raise Exception("timestamp went wrong")
 
-        if not GBCEUtils.type_is_int(self.quantity):
+        if not TypeUtils.type_is_int(self.quantity):
             raise Exception("Quantity has to be an integer: " + repr(self.quantity)+ " type="+str(type(self.quantity)))
 
         if not self.quantity > 0:
@@ -52,7 +53,7 @@ class Trade(object):
 
     numpy_dtype = [('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')]
 
-    EXAMPLE1 = np.array([(GBCEUtils.BIGBANG, 2, SELL, 1.0)], \
+    EXAMPLE1 = np.array([(TimeUtils.BIGBANG, 2, SELL, 1.0)], \
       dtype=numpy_dtype)
 
     EMPTY = np.array([], numpy_dtype)

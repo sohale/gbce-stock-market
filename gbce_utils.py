@@ -3,7 +3,7 @@
 import datetime
 import numpy as np
 
-class GBCEUtils(object):
+class TypeUtils(object):
     """ A static class that is simply a collection of static functions. """
 
     @staticmethod
@@ -11,6 +11,8 @@ class GBCEUtils(object):
         """ Checks if a value is of an int type. Is used in check() and other class invariants."""
         # return type(value) is int  or  type(value) == np.int32
         return isinstance(value, int)  or  isinstance(value, np.int32)
+
+class TimeUtils(object):
 
     ############## Timestamp utils ############
 

@@ -1,6 +1,6 @@
 """ Company """
 
-from gbce_utils import GBCEUtils
+from gbce_utils import TypeUtils
 
 class CompanyEntry(object):
 
@@ -50,7 +50,7 @@ class CompanyEntry(object):
             if not (self.fixed_dividend >= 0.0 and self.fixed_dividend <= 1.0):
                 raise Exception("fixed_dividend has to be a real number between 0%, 100% (i.e. between 0.0 and 1.0). " + str(self.fixed_dividend*100.0)+" %")
 
-        if not GBCEUtils.type_is_int(self.par_value):
+        if not TypeUtils.type_is_int(self.par_value):
             raise Exception("Par Value has to be int. It is "+repr(self.par_value)+" of type " + str(type(self.par_value)))
 
         if not self.par_value > 0:
