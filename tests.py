@@ -158,8 +158,20 @@ class TradeSeriesTest(unittest.TestCase):
         count = 100  # fixme: make sure this covers beyond number of minutes from both sides
         selected_trades_iter = TradeSeriesTest.select_15min(how_many_minutes, count, self)
         vwsp =TradeSeries.calculate_volume_weighted_stock_price(selected_trades_iter)
-        print "calculate_volume_weighted_stock_price: " , vwsp
+        print "Volume Weighted Stock Price: " , vwsp
         TestUtils.assertFloatEqual(self, vwsp, 1.0)  # 1.0 because all prices are 1.0, soany weighted average will be 1.0
+
+    def test_GBCE_AllShare_Index(self):
+        """
+        Calculate the GBCE All-Share Index using the geometric mean of prices for all stocks
+        """
+        how_many_minutes = 15
+        count = 100  # fixme: make sure this covers beyond number of minutes from both sides
+        selected_trades_iter = TradeSeriesTest.select_15min(how_many_minutes, count, self)
+        asi = TradeSeries.calculate_geometric_mean(selected_trades_iter)
+        print "All-Share Index: " , asi
+        TestUtils.assertFloatEqual(self, asi, 1.0)
+
 
 
 if __name__ == '__main__':

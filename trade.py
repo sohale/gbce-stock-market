@@ -37,6 +37,7 @@ class Trade(object):
             raise Exception("Trade type has to be either Trade.BUY or Trade.SELL: "+repr(self.buysell)+" Has to be in "+str([Trade.BUY,Trade.SELL]))
 
         if not self.price > 0.0:
+            # math.log(self.price) is meaningful
             raise Exception("Trade price has to be a real positive number")
 
         # Make sure the units are in milliseconds

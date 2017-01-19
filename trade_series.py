@@ -3,6 +3,8 @@
 
 """ TradeSeries, a sorted set of trades in a GBCE Stock Exchange. """
 
+import math
+
 from trade import Trade
 from gbce_utils import TimeUtils
 
@@ -42,8 +44,9 @@ class TradeSeries(object):
         return self._select_recent_trades(from_ms, numpy_time_now_ms)
 
     VERBOSE = True
+
     @staticmethod
-    def calculate_volume_weighted_stock_price(iterator):
+    def calculate_volume_weighted_stock_price(trades_iterable):
         """
         Volume Weighted Stock Price
         """
@@ -54,7 +57,7 @@ class TradeSeries(object):
 
         weighted_price = 0.0
         sum_weights = 0.0
-        for trade in iterator:
+        for trade in trades_iterable:
             weighted_price += trade.quantity * trade.price
             sum_weights += trade.quantity
 
@@ -71,3 +74,35 @@ class TradeSeries(object):
         if sum_weights == 0.0:
             raise Exception("No trade, sum(quantity) is zero.")
         return weighted_price / sum_weights
+
+    @staticmethod
+    def calculate_geometric_mean(trades_iterable):
+        """
+        Calculate the GBCE All-Share Index using the geometric mean of prices for all stocks
+        """
+        if TradeSeries.VERBOSE:
+            weighted_price_str = []
+            sum_weights_str = []
+            print
+
+        weighted_logprice = 0.0
+        sum_weights = 0.0
+        for trade in trades_iterable:
+            # log(trade.price) is always defined because the Trade.invar() guarantees it.
+            weighted_logprice += trade.quantity * math.log(trade.price)
+            sum_weights += trade.quantity
+
+            if TradeSeries.VERBOSE:
+                weighted_price_str.append(str(trade.price) + "^" + str(trade.quantity) )
+                sum_weights_str.append(str(trade.quantity))
+
+        if TradeSeries.VERBOSE:
+            print "[", " * ".join(weighted_price_str) + "] ",
+            cnt = len(weighted_price_str) + 5
+            print " ^ 1  /  (",
+            print " * ".join(sum_weights_str), "=", sum_weights,
+            print ")"
+
+        if sum_weights == 0.0:
+            raise Exception("No trade, sum(quantity) is zero.")
+        return math.exp(weighted_logprice / sum_weights)
