@@ -5,12 +5,13 @@ Also see `market.py` and `tests.py`. To start, use `./run.sh`
 
 ## Usage:
 ```
-./gbce.py init
-./gbce.py company ABC 12 50 
-./gbce.py company JUC 15 30 
+./gbce.py init  # deletes and initialises the state of the market on disk
+./gbce.py company ABC 12 50
+./gbce.py company JUC 15 30
 ./gbce.py show
-./gbce.py show
-./gbce.py deliberately_causing_error
+./gbce.py trade JUC £10.0 +3  # to be implemented
+./gbce.py buy GIN £10.0 3  # to be implemented
+./gbce.py sell ALE £5.0 2  # to be implemented
 ```
 
 ## Data Structures:
