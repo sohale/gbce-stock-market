@@ -1,16 +1,20 @@
-import numpy as np
+""" Utility functions for GBCE Simple Stock Market """
+
 import datetime
+import numpy as np
 
 class GBCEUtils(object):
-    """ Utility functions, a static class that is simply a collection of static functions. """
+    """ A static class that is simply a collection of static functions. """
 
     @staticmethod
     def type_is_int(value):
-        return type(value) == int  or  type(value) == np.int32
+        """ Checks if a value is of an int type. Is used in check() and other class invariants."""
+        # return type(value) is int  or  type(value) == np.int32
+        return isinstance(value, int)  or  isinstance(value, np.int32)
 
     ############## Timestamp utils ############
 
-    """ The origin of time. """
+    # """ The origin of time. """
     BIGBANG = np.datetime64(datetime.datetime(1800, 1, 1), 'ms')
 
     #

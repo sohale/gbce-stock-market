@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+""" Unit tests for various classes in GBCE, including Trade, CompanyEntry, Utils"""
 import unittest2 as unittest
 import numpy as np
+from operator import xor
 
 from trade import Trade
 from company import CompanyEntry
@@ -30,6 +32,7 @@ class TradeTest(unittest.TestCase):
         assert type(t.quantity) == int
 
     def test_recoding_test(self):
+        """ Re-coding means encoding and decoding back from and to another representation (here, numpy versus class)"""
         t = TradeTest.example_trade()
         print repr(Trade.numpy_2_trade(t.numpy()))
         recoded = Trade.numpy_2_trade(t.numpy())
@@ -37,6 +40,19 @@ class TradeTest(unittest.TestCase):
         print recoded, t, recoded == t
 
         assert t == Trade.numpy_2_trade(t.numpy())  # timestamp's units
+
+    def _assert_bad_trade(self, quantity, message_substring, no_exception=False):
+        with self.assertRaises(Exception) as context:
+            t = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), quantity=quantity, buysell_type=Trade.BUY, trade_price=1.00)
+            t.invar()
+        self.assertTrue(xor(message_substring in str(context.exception), bool(no_exception)))
+
+    def test_bad_trade(self):
+        """ Tests whether non-int types are corrected """
+        self._assert_bad_trade(13.01, 'Quantity has to be an integer')
+        self._assert_bad_trade(13.00, 'Quantity has to be an integer')
+        self._assert_bad_trade(0.00, 'Quantity has to be an integer')
+        self._assert_bad_trade(0.00, 'Quantity has to be an integer')
 
 class MiscTests(unittest.TestCase):
     def tests_numpy_version(self):
