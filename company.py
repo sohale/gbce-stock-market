@@ -108,3 +108,12 @@ class CompanyEntry(object):
             # is 'last_dividend' ignored?
             return self.fixed_dividend * self.par_value / market_price
 
+    def PE_ratio(self, market_price):
+        """ I am very unsure about this. Domain knowledge is required. I write it based on my best judgement. 
+        Problem: Division by zero. """
+        dividend = self.calculate_dividend_yield(market_price)
+        assert dividend > 0, "dividend cannot be zero for P/E ratio " + repr(dividend)
+        return market_price / dividend
+
+    def report_company(self, market_price):
+        return repr(self) + " P/E=" + self.PE_ratio(market_price) + " DivYield=" + CurrencyUtils.GBP_symbol + str(self.calculate_dividend_yield(market_price))
