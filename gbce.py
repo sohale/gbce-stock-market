@@ -6,9 +6,6 @@ import sys
 from company import CompanyEntry
 from market import Market
 
-def demo_get15min():
-    print 'Please run "python tests.py" instead'
-
 class commandline(object):
     """ A static class for offline operations. """
 
@@ -57,14 +54,20 @@ functions_lookup = {
 if __name__ == "__main__":
     # demo_get15min()
     #print repr(sys.argv)  # ['p1.py', 'company', 'ABC', '12', '50']
+    if len(sys.argv) == 1:
+        print "Invalid usage. Usage:", """ 
+        ./gbce.py init
+        ./gbce.py company ABC 12 50 
+        ./gbce.py company JUC 15 30 
+        ./gbce.py show
+        """
+        exit()
+
     commandname = sys.argv[1]
     xargs = sys.argv[2:]
-    # commandline.init()
-    #commandline.show()
-    #commandline.company(*(sys.argv[1:]))
+
     if not commandname in functions_lookup:
         raise Exception("unknown command. available commands: "+(", ".join(functions_lookup.keys())))
     func = functions_lookup[commandname]
     print "COMMAND: ", commandname
     func(*xargs)
-
