@@ -12,13 +12,16 @@ from company import CompanyEntry
 # assert np.version.full_version >= '1.11.2'
 
 class TradeTest(unittest.TestCase):
+    """ Checks various things about instances of class Trade"""
 
     @staticmethod
     def example_trade():
+        """ Generates a Trade objects, used in multiple tests. """
         # Todo: should be in Pence (hundredth of a Pound, or in Pounds (GBP) with wo decimals)
-        t = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), quantity=13, buysell_type=Trade.BUY, trade_price=1.00)
-        t.invar()
-        return t
+        trd = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), \
+            quantity=13, buysell_type=Trade.BUY, trade_price=1.00)
+        trd.invar()
+        return trd
 
     def test1(self):
         """ Contains multiple unit test."""
@@ -26,26 +29,31 @@ class TradeTest(unittest.TestCase):
         print repr(t.numpy())
         print repr(t.numpy().shape)
         t.invar()
-        #print np.datetime64('2005-02-25')
-        assert t.timestamp - np.datetime64('2005-02-25','ms')  == np.timedelta64(0,'ms')
+        # print np.datetime64('2005-02-25')
+        assert t.timestamp - np.datetime64('2005-02-25', 'ms') == np.timedelta64(0, 'ms')
         assert t.quantity == 13
-        assert type(t.quantity) == int
+        self.assertEqual(type(t.quantity), int)
 
     def test_recoding_test(self):
-        """ Re-coding means encoding and decoding back from and to another representation (here, numpy versus class)"""
+        """ Re-coding means encoding and decoding back from and to another representation
+           (here, numpy versus class)"""
         t = TradeTest.example_trade()
         print repr(Trade.numpy_2_trade(t.numpy()))
         recoded = Trade.numpy_2_trade(t.numpy())
         print str(recoded)
         print recoded, t, recoded == t
 
-        assert t == Trade.numpy_2_trade(t.numpy())  # timestamp's units
+        # Involves the timestamp's units
+        assert t == Trade.numpy_2_trade(t.numpy())
 
-    def _assert_bad_trade_raises_exception(self, quantity, message_substring, causes_exception=True):
+    def _assert_bad_trade_raises_exception(self, quantity, message_substring,\
+            causes_exception=True):
         with self.assertRaises(Exception) as context:
-            t = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), quantity=quantity, buysell_type=Trade.BUY, trade_price=1.00)
+            t = Trade( timestamp=np.datetime64('2005-02-25', 'ms'), \
+                quantity=quantity, buysell_type=Trade.BUY, trade_price=1.00)
             t.invar()
-        self.assertTrue(xor(message_substring in str(context.exception), not bool(causes_exception)))
+        self.assertTrue(xor(message_substring in str(context.exception), \
+            not bool(causes_exception)))
 
     def test_bad_trade(self):
         """ Tests whether non-int types are correctly detected """
@@ -71,12 +79,11 @@ class CompanyTest(unittest.TestCase):
         t2 = CompanyEntry('POP', CompanyEntry.CT.COMMON, 8, None, 100)
         t3 = CompanyEntry('ALE', CompanyEntry.CT.COMMON, 23, None, 60)
         t4 = CompanyEntry('GIN', CompanyEntry.CT.PREFERRED, 8, 2, 100)
-        t5 = CompanyEntry('JOE', CompanyEntry.CT.COMMON, 13, None, 250)                                                                                                                                                                                                                                                                                                                 
-        print "111111", t1.calculate_dividend_yield(1)
+        t5 = CompanyEntry('JOE', CompanyEntry.CT.COMMON, 13, None, 250)
+        self.assertEqual( t1.calculate_dividend_yield(1.0), 0)
 
 
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
     unittest.main()
-
