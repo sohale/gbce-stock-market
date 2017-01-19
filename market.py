@@ -1,3 +1,4 @@
+import pickle
 
 from trade import Trade
 from trade_series import TradeSeries
@@ -51,3 +52,18 @@ class Market(object):
         return Trade.numpy_array(iterable, use_rec)
 
     #todo: pandas dataframe representation
+
+    def store_on_disk(self,companies_fname='companies.pickle', trades_fname='trades.numpy'):
+        companies_fname = 'companies.pickle'
+        trades_fname = 'trades.numpy'
+        pickle.dump( self.companies_dict, open( companies_fname, "wb" ) )
+        #self.trade_series
+
+    @staticmethod
+    def load_from_disk(companies_fname='companies.pickle',trades_fname='trades.numpy'):
+        market = Market()
+        market.companies_dict = pickle.load( open( companies_fname, "rb" ) )
+        return market
+
+    def __repr__(self):
+        return repr(self.companies_dict)+" TRADES:"+str(len(self.trade_series.all_trades))

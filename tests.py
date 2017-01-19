@@ -25,12 +25,12 @@ class TradeTest(unittest.TestCase):
         trd = Trade(c, timestamp=np.datetime64('2005-02-25', 'ms'), \
             quantity=13, buysell_type=Trade.BUY, trade_price=1.00)
         trd.check()
-        companies_list = { c.abbrev: c }  # !
-        return trd, companies_list
+        companies_dict = { c.abbrev: c }  # !
+        return trd, companies_dict
 
     def test_1(self):
         """ Contains multiple unit test."""
-        trd, companies_list = TradeTest.example_trade()
+        trd, companies_dict = TradeTest.example_trade()
         # print repr(trd.numpy())
         self.assertEqual(trd.numpy().shape, (1,))
         trd.check()
@@ -42,8 +42,8 @@ class TradeTest(unittest.TestCase):
     def test_recoding_test(self):
         """ Re-coding means encoding and decoding back from and to another representation
            (here, numpy versus class)"""
-        trd, companies_list = TradeTest.example_trade()
-        decoded_trades_list = Market._numpy_2_trade(trd.numpy(), companies_list)
+        trd, companies_dict = TradeTest.example_trade()
+        decoded_trades_list = Market._numpy_2_trade(trd.numpy(), companies_dict)
         self.assertEqual(len(decoded_trades_list), 1 )
         # print repr(decoded_trades_list[0])
         recoded = decoded_trades_list[0]
