@@ -22,7 +22,7 @@ class TradeTest(unittest.TestCase):
         trd = Trade(c, timestamp=np.datetime64('2005-02-25', 'ms'), \
             quantity=13, buysell_type=Trade.BUY, trade_price=1.00)
         trd.check()
-        companies_list = [ c ]  # !
+        companies_list = { c.abbrev: c }  # !
         return trd, companies_list
 
     def test_1(self):
@@ -42,7 +42,7 @@ class TradeTest(unittest.TestCase):
         trd, companies_list = TradeTest.example_trade()
         print repr(Trade.numpy_2_trade(trd.numpy(), companies_list))
         recoded = Trade.numpy_2_trade(trd.numpy(), companies_list)
-        print str(recoded)
+        print "**************", str(recoded)
         print recoded, trd, recoded == trd
 
         # Involves the timestamp's units

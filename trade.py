@@ -2,26 +2,27 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-import datetime
 
 from company import CompanyEntry
 from gbce_utils import TypeUtils
 from gbce_utils import TimeUtils
+from gbce_utils import CurrencyUtils
 
 class Trade(object):
+    """ A Trade, of the stock of a specific company, with a specific price. """
 
     BUY = True
     SELL = False
 
     def __init__(self, company_obj, timestamp, quantity, buysell_type, trade_price):
         """
-        @param company_obj: is Nullable (Nonable).
+        @param company_obj: is not Nullable (not None).
         @param quantity: Quantity (number) of shares: Integer >= 1
         @param price: Trade price. price > 0
         """
         self.company_obj = company_obj
-        if self.company_obj is not None:
-            self.company_obj.check()
+        #if self.company_obj is not None:
+        self.company_obj.check()
         self.timestamp = timestamp
         self.quantity = quantity
         self.buysell = buysell_type
@@ -109,14 +110,16 @@ class Trade(object):
         # fixme: select those companies only based on their three-etter code
         def lookup_company(company_abbr, companies_list):
             assert len(company_abbr) == 3
-            for c in companies_list:
+            assert type(companies_list) is dict
+            for abbrev,c in companies_list.iteritems():
+                assert abbrev == c.abbrev
                 if c.abbrev == company_abbr:
                     return c
             raise Exception("company not found from the name (abbreviation): "+repr(company_abbr))
 
         def one_trade_element(a, i):
             abbrv = a[i]['abbrev']
-            company = lookup_company(abbrv, companies);
+            company = lookup_company(abbrv, companies)
             obj = Trade(company, a[i]['timestamp'], a[i]['quantity'], a[i]['buysell'], a[i]['price'])
             obj.check()
             return obj
@@ -126,16 +129,16 @@ class Trade(object):
 
     def currency_symbol(self):
         # return u"£".encode( "utf-8" )
-        return u"P"
+        return CurrencyUtils.GBP_symbol
 
     def __repr__(self):
         """Return the square of x.
 
         >>> t = Trade(None, timestamp=np.datetime64('2005-02-25', 'ms'), quantity=13, buysell_type=Trade.BUY, trade_price=1.00); repr(t)
-        'Trade:13xP1.0:BU Y@2005-02-25T00:00:00.000'
+        'T rade:13xP1.0:BUY@2005-02-25T00:00:00.000'
         """
 
-        return "Trade:"+str(self.quantity)+"x" +self.currency_symbol()+str(self.price)+":"+('BUY' if self.buysell==Trade.BUY else 'SELL')+"@"+str(self.timestamp)
+        return "Trade:"+(self.company_obj.abbrev)+";("+('BUY' if self.buysell==Trade.BUY else 'SELL')+")"+str(self.quantity)+"x" +self.currency_symbol()+str(self.price)+"@"+str(self.timestamp)
 
     def __eq__(self, other):
         return self.quantity == other.quantity    \
@@ -143,4 +146,6 @@ class Trade(object):
           and self.buysell == other.buysell      \
           and self.timestamp == other.timestamp
 
-
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
