@@ -27,15 +27,15 @@ class TradeTest(unittest.TestCase):
         trd.check()
         return trd
 
-    def test1(self):
+    def test_1(self):
         """ Contains multiple unit test."""
         trd = TradeTest.example_trade()
-        print repr(trd.numpy())
-        print repr(trd.numpy().shape)
+        # print repr(trd.numpy())
+        self.assertEqual(trd.numpy().shape, (1,))
         trd.check()
         # print np.datetime64('2005-02-25')
-        assert trd.timestamp - np.datetime64('2005-02-25', 'ms') == np.timedelta64(0, 'ms')
-        assert trd.quantity == 13
+        self.assertEqual(trd.timestamp - np.datetime64('2005-02-25', 'ms'), np.timedelta64(0, 'ms') )
+        self.assertEqual(trd.quantity, 13)
         self.assertEqual(type(trd.quantity), int)
 
     def test_recoding_test(self):
