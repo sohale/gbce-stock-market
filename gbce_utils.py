@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """ Utility functions for GBCE Simple Stock Market """
 
 import datetime
@@ -47,3 +50,8 @@ class TimeUtils(object):
             raise Exception("time difference (delta) needs to be an integer, a factor of msec") 
         assert TypeUtils.type_is_int(time_diff_ms)
         return np.timedelta64(time_diff_ms, 'ms')
+
+
+class CurrencyUtils(object):
+    GBP_symbol = u"£".encode( "utf-8" )
+    # u"P"

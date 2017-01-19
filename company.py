@@ -1,6 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """ Company """
 
 from gbce_utils import TypeUtils
+from gbce_utils import CurrencyUtils
 
 class CompanyEntry(object):
 
@@ -10,19 +14,26 @@ class CompanyEntry(object):
         PREFERRED = 6789
 
     def __init__(self, abbrev, company_type, last_dividend, fixed_dividend, par_value):
-        """ @param par_value:  aka face value or nominal value of a bond/stock.
-        Par value is a per share amount appearing on stock certificates as well as bond certificates. 
-        Units: GBP. Par value for a bond is typically 1,000 or 100 GBP. 
+        """
+        @param par_value:  aka face value or nominal value of a bond/stock.
+        Par value is a per share amount appearing on stock certificates as well as bond certificates.
+        Units: Par value for a bond is typically $1,000 or $100 (in US).
+
+        COMMON Stock:
         In the case of common stock the par value per share is usually a very small amount such as $0.10 or $0.01 or $0.001 and it has no connection to the market value of the share of stock
         It is not often mentioned for the `common stock` because it is arbitrary.
         The par Value is a static value, unlike `market value` which can fluctuate on a daily basis. 
         ref: http://www.investopedia.com/terms/a/at-par.asp
-        It determins a fixed-income (for coupons).
-        fixed annual payment = coupon rate * Par Value (both fixed).
-        It determins the maturity value, that is, (coupon rate 100%) * Par Value.
-        Is fixed_dividend, the coupon rate?
 
-        @param company_type: Common stock """
+
+        PREFERRED Stock:
+        It (Par Value) determins a fixed-income (for coupons).
+        The fixed annual payment := coupon rate * Par Value (both fixed).
+        It determins the maturity value, that is(?); (coupon rate 100%) * Par Value.
+        Is fixed_dividend = the coupon rate?
+
+        @param company_type: Common Stock or PREFERRED Stock
+        """
         self.ct = company_type
         if not self._type_preferred():
             assert fixed_dividend is None
@@ -33,6 +44,15 @@ class CompanyEntry(object):
         self.last_dividend = last_dividend
         self.par_value = par_value
         self.check()
+
+    def __repr__(self):
+        if self._type_preferred():
+            # PREFERRED
+            return self.abbrev + " (P: %" +str((self.fixed_dividend) * 100)+" x ParV:" + CurrencyUtils.GBP_symbol+ str(self.par_value) + ")"
+        else:
+            # COMMON
+            #return "OK"
+            return self.abbrev + " (C: " + CurrencyUtils.GBP_symbol + ('%.2f' %(self.last_dividend)) + ")"
 
     def check(self):
         """ Class invariant. Asserts consistency of data in this object. """
@@ -45,8 +65,10 @@ class CompanyEntry(object):
 
         if not self._type_preferred():
             if self.fixed_dividend is not None:
-                raise Exception("fixed_dividend has to be None for PREFERRED company type.")
+                raise Exception("fixed_dividend has to be None for PREFERRED Sock company type.")
         else:
+            if self.fixed_dividend is None:
+                raise Exception("fixed_dividend cannot be None for COMMON Stock company type. "+repr(self.fixed_dividend))
             if not (self.fixed_dividend >= 0.0 and self.fixed_dividend <= 1.0):
                 raise Exception("fixed_dividend has to be a real number between 0%, 100% (i.e. between 0.0 and 1.0). " + str(self.fixed_dividend*100.0)+" %")
 

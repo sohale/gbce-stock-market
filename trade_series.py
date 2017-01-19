@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """ TradeSeries, a sorted set of trades in a GBCE Stock Exchange. """
 
 from trade import Trade

@@ -83,12 +83,19 @@ def some_doctests():
 class CompanyTest(unittest.TestCase):
     def test_GBCE_company_etries(self):
         # GBCE
-        t1 = CompanyEntry('TEA', CompanyEntry.CT.COMMON, 0, None, 100)
-        t2 = CompanyEntry('POP', CompanyEntry.CT.COMMON, 8, None, 100)
-        t3 = CompanyEntry('ALE', CompanyEntry.CT.COMMON, 23, None, 60)
-        t4 = CompanyEntry('GIN', CompanyEntry.CT.PREFERRED, 8, 2, 100)
-        t5 = CompanyEntry('JOE', CompanyEntry.CT.COMMON, 13, None, 250)
-        self.assertEqual(t1.calculate_dividend_yield(1.0), 0)
+        t0 = CompanyEntry('TEA', CompanyEntry.CT.COMMON, 0, None, 100)
+        t1 = CompanyEntry('POP', CompanyEntry.CT.COMMON, 8, None, 100)
+        t2 = CompanyEntry('ALE', CompanyEntry.CT.COMMON, 23, None, 60)
+        t3 = CompanyEntry('GIN', CompanyEntry.CT.PREFERRED, 8, 2, 100)
+        t4 = CompanyEntry('JOE', CompanyEntry.CT.COMMON, 13, None, 250)
+        tlist = [t0, t1, t2, t3, t4]
+        for t in tlist: print t.calculate_dividend_yield(1.0)
+        # These numbers are not verified:
+        self.assertEqual(tlist[0].calculate_dividend_yield(1.0), 0.0)
+        self.assertEqual(tlist[1].calculate_dividend_yield(1.0), 8.0)
+        self.assertEqual(tlist[2].calculate_dividend_yield(1.0), 23)
+        self.assertEqual(tlist[3].calculate_dividend_yield(1.0), 2.0)
+        self.assertEqual(tlist[4].calculate_dividend_yield(1.0), 13.0)
 
 from trade_series import TradeSeries
 from gbce_utils import TimeUtils
