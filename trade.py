@@ -4,6 +4,7 @@
 import numpy as np
 import datetime
 
+from company import CompanyEntry
 from gbce_utils import TypeUtils
 from gbce_utils import TimeUtils
 
@@ -12,18 +13,29 @@ class Trade(object):
     BUY = True
     SELL = False
 
-    def __init__(self, timestamp, quantity, buysell_type, trade_price):
+    def __init__(self, company_obj, timestamp, quantity, buysell_type, trade_price):
+        """
+        @param company_obj: is Nullable (Nonable).
+        @param quantity: Quantity (number) of shares: Integer >= 1
+        @param price: Trade price. price > 0
+        """
+        self.company_obj = company_obj
+        if self.company_obj is not None:
+            self.company_obj.check()
         self.timestamp = timestamp
-        "Quantity (number) of shares: Integer >= 1"
         self.quantity = quantity
         self.buysell = buysell_type
-        "Trade price. price > 0"
         self.price = trade_price
         self.invar()
 
 
     def invar(self):
         """ Class Invariant: checks (asserts) consistency (validity) of the object's state. """
+
+        if self.company_obj is not None and not isinstance(self.company_obj, CompanyEntry):
+            raise Exception("Company object is not provided.")
+
+
         if not self.timestamp > TimeUtils.BIGBANG:
             raise Exception("timestamp went wrong")
 
@@ -92,7 +104,9 @@ class Trade(object):
     @staticmethod
     def numpy_2_trade(a):
         assert a.shape == (1,)
-        obj = Trade(a[0]['timestamp'], a[0]['quantity'], a[0]['buysell'], a[0]['price'])
+        # fixme: select those companies only based on their three-etter code
+        company = None
+        obj = Trade(company, a[0]['timestamp'], a[0]['quantity'], a[0]['buysell'], a[0]['price'])
         obj.invar()
         return obj
 
@@ -103,7 +117,7 @@ class Trade(object):
     def __repr__(self):
         """Return the square of x.
 
-        >>> t = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), quantity=13, buysell_type=Trade.BUY, trade_price=1.00); repr(t)
+        >>> t = Trade(None, timestamp=np.datetime64('2005-02-25', 'ms'), quantity=13, buysell_type=Trade.BUY, trade_price=1.00); repr(t)
         'Trade:13xP1.0:BU Y@2005-02-25T00:00:00.000'
         """
 

@@ -19,7 +19,9 @@ class TradeTest(unittest.TestCase):
     def example_trade():
         """ Generates a Trade objects, used in multiple tests. """
         # Todo: should be in Pence (hundredth of a Pound, or in Pounds (GBP) with wo decimals)
-        trd = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), \
+        #c = CompanyTest.example2()
+        c = None
+        trd = Trade(c, timestamp=np.datetime64('2005-02-25', 'ms'), \
             quantity=13, buysell_type=Trade.BUY, trade_price=1.00)
         trd.invar()
         return trd
@@ -50,7 +52,7 @@ class TradeTest(unittest.TestCase):
     def assert_bad_trade_raises_exception(self, quantity, message_substring,\
             causes_exception=True):
         with self.assertRaises(Exception) as context:
-            trd = Trade(timestamp=np.datetime64('2005-02-25', 'ms'), \
+            trd = Trade(None, timestamp=np.datetime64('2005-02-25', 'ms'), \
                 quantity=quantity, buysell_type=Trade.BUY, trade_price=1.00)
             trd.invar()
         self.assertTrue(xor(message_substring in str(context.exception), \
@@ -95,6 +97,10 @@ class CompanyTest(unittest.TestCase):
         tlist = [t0, t1, t2, t3, t4]
         return tlist
 
+    @staticmethod
+    def example2():
+        return CompanyEntry('TEA', CompanyEntry.CT.COMMON, 0, None, 100)
+
     def test_GBCE_company_etries(self):
         tlist = CompanyTest.example1()
 
@@ -119,7 +125,8 @@ class TradeSeriesTest(unittest.TestCase):
             numpy_time_now = TimeUtils.numpy_time_now()
             OFFSET = -2  # To make sure it includes all of it, even depite being end-exlusive
             ts = numpy_time_now - TimeUtils.numpy_time_delta_min(1*i + OFFSET)
-            trd = Trade(timestamp=ts, \
+            c = CompanyTest.example2()
+            trd = Trade(c, timestamp=ts, \
                 quantity=3+(i % 5), buysell_type=Trade.BUY, trade_price=1.00)
             trd.invar()
             trade_series.all_trades.append(trd)
