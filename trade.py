@@ -23,13 +23,10 @@ class Trade(object):
 
     def invar(self):
         """ Class Invariant: checks (asserts) consistency (validity) of the object's state. """
-        #print "**", self.timestamp - Trade.BIGBANG, " ----  ",  self.timestamp, " ----  ", Trade.BIGBANG
-        if not self.timestamp > Trade.BIGBANG:
+        if not self.timestamp > GBCEUtils.BIGBANG:
             raise Exception("timestamp went wrong")
-        #if (math.floor(self.quantity)- self.quantity) == 0.0:
+
         if not GBCEUtils.type_is_int(self.quantity):
-            #print math.floor(self.quantity), self.quantity, math.floor(self.quantity) - self.quantity
-            #print type(self.quantity)  # numpy.int32
             raise Exception("Quantity has to be an integer: " + repr(self.quantity)+ " type="+str(type(self.quantity)))
 
         if not self.quantity > 0:
@@ -55,9 +52,7 @@ class Trade(object):
 
     numpy_dtype = [('timestamp', 'datetime64[ms]'),('quantity', 'i4'), ('buysell', 'b1'), ('price', 'f4')]
 
-    BIGBANG = np.datetime64(datetime.datetime(1800, 1, 1), 'ms')
-
-    EXAMPLE1 = np.array([(datetime.datetime(1800, 1, 1), 2, SELL, 1.0)], \
+    EXAMPLE1 = np.array([(GBCEUtils.BIGBANG, 2, SELL, 1.0)], \
       dtype=numpy_dtype)
 
     EMPTY = np.array([], numpy_dtype)
@@ -66,13 +61,6 @@ class Trade(object):
     #EMPTY_REC = np.rec.array([], \
     #  dtype=numpy_dtype)
 
-    #
-    # h	hour	+/- 1.0e15 years	[1.0e15 BC, 1.0e15 AD]
-    # m	minute	+/- 1.7e13 years	[1.7e13 BC, 1.7e13 AD]
-    # s	second	+/- 2.9e12 years	[ 2.9e9 BC, 2.9e9 AD]
-    # ms	millisecond	+/- 2.9e9 years	[ 2.9e6 BC, 2.9e6 AD]
-    # us	microsecond	+/- 2.9e6 years	[290301 BC, 294241 AD]
-    # ns	nanosecond	+/- 292 years	[ 1678 AD, 2262 AD]
 
     def numpy(self):
         #todo: @param: relative time difference reference
